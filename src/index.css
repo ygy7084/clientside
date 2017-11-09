@@ -1,0 +1,16 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100% !important;
+  font-family: 'Roboto', sans-serif;
+}
+[data-reactroot]
+{
+  height: 100% !important;
+}
+#root {
+  height: 100%;
+}
+#root > div {
+  height: 100%;
+}
