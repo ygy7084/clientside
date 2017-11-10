@@ -1,16 +1,17 @@
 /* global fetch */
-export const WAITING = 'Entry/data/login/WAITING';
-export const SUCCESS = 'Entry/data/login/SUCCESS';
-export const FAILURE = 'Entry/data/login/FAILURE';
+export const WAITING = 'data/logout/WAITING';
+export const SUCCESS = 'data/logout/SUCCESS';
+export const FAILURE = 'data/logout/FAILURE';
 
 const waiting = () => {
   return {
     type: WAITING,
   };
 };
-const success = () => {
+const success = (user) => {
   return {
     type: SUCCESS,
+    user,
   };
 };
 const failure = (error) => {
@@ -19,17 +20,16 @@ const failure = (error) => {
     error,
   };
 };
-export const request = (input) => {
+export const request = () => {
   return (dispatch) => {
     dispatch(waiting());
-    return fetch('http://localhost:8080/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    return fetch('http://localhost:8080/auth/logout', {
+      method: 'GET',
       credentials: 'include',
-      body: JSON.stringify({
-        username: input.username,
-        password: input.password,
-      }),
+      headers: {
+        'pragma': 'no-cache',
+        'cache-control': 'no-cache',
+      },
     })
       .then((res) => {
         if (res.ok) { return res.json(); }

@@ -140,6 +140,13 @@ class Shop extends React.Component {
     }
   }
   handleClickControls(control, data) {
+    let obj;
+    if (data) {
+      obj = JSON.parse(JSON.stringify(data));
+    }
+    if (control === 'createOne') {
+      obj._id = undefined;
+    }
     switch (control) {
       case 'toCreatePage':
         this.props.changePage(`${this.props.match.url}/create`);

@@ -1,3 +1,4 @@
+/* global FileReader */
 import React from 'react';
 import _ from 'lodash';
 import Paper from 'material-ui/Paper';
@@ -6,8 +7,13 @@ import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import { withStyles } from 'material-ui/styles';
-import ControlPanel from '../ControlPanel/index';
-import AutoSuggestion from '../../../../components/AutoSuggestion';
+import FileUpload from 'material-ui-icons/FileUpload';
+import Button from 'material-ui/Button';
+import ControlPanel from '../ControlPanel';
+import AutoSuggestion from '../AutoSuggestion';
+import configure from '../../../../modules/configure';
+
+import './styles.css';
 
 const styles = theme => ({
   root: {
@@ -26,6 +32,16 @@ const styles = theme => ({
   },
   formInput: {
     marginBottom: theme.spacing.unit,
+  },
+  fileInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
   },
 });
 function isError(obj, value) {
@@ -52,21 +68,43 @@ function initialize(structure, item) {
   });
   return structure;
 }
-class Content extends React.Component {
+class ImageInputDialog extends React.Component {
   constructor(props) {
     super(props);
     const initState = initialize(props.itemStructure, props.item);
+    let pictureUrl = '';
+    if (props.mode === 'modify') {
+      const fileName = initState.find(o => o.name === 'fileName').value;
+      const path = initState.find(o => o.name === 'path').value;
+      pictureUrl = `${configure.SERVER}${path}/${fileName}?${new Date().getTime()}`;
+    }
     this.state = {
       inputs: initState,
+      file: '',
+      pictureUrl,
+      pictureChanged: props.mode === 'create' ? undefined : false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClickControls = this.handleClickControls.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+  }
+  componentDidMount() {
+    if (this.props.mode === 'modify') {
+      this.props.requestItem(this.props.match.params.id);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
       const initState = initialize(nextProps.itemStructure, nextProps.item);
+      let pictureUrl = '';
+      if (this.props.mode === 'modify') {
+        const fileName = initState.find(o => o.name === 'fileName').value;
+        const path = initState.find(o => o.name === 'path').value;
+        pictureUrl = `${configure.SERVER}${path}/${fileName}?${new Date().getTime()}`;
+      }
       this.setState({
         inputs: initState,
+        pictureUrl,
       });
     }
   }
@@ -84,10 +122,30 @@ class Content extends React.Component {
     this.state.inputs.forEach(o =>
       _.set(result, o.target, o.value)
     );
+    let file;
+    if ((this.props.mode === 'create' && this.state.file) ||
+      (this.props.mode === 'modify' && this.state.pictureChanged)) {
+      file = this.state.file;
+    }
     switch (clicked) {
       default:
-        this.props.handleClickControls(clicked, result);
+        this.props.handleClickControls(clicked, result, file);
         break;
+    }
+  }
+  handleImageChange(e) {
+    e.preventDefault();
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    if (file) {
+      reader.onloadend = () => {
+        this.setState({
+          file,
+          pictureUrl: reader.result,
+          pictureChanged: this.props.mode === 'modify' ? true : undefined,
+        });
+      };
+      reader.readAsDataURL(file);
     }
   }
   render() {
@@ -153,9 +211,7 @@ class Content extends React.Component {
           handleClickControls={this.handleClickControls}
           noRemove={!item}
           mode={mode}
-          cannotSave={this.state.inputs.map(o => o.error).reduce((a, c) => {
-            return !!(a || c);
-          })}
+          cannotSave={this.state.file === '' || (mode === 'modify' && !this.state.pictureChanged)}
         />
         <Paper className={classes.root}>
           <Toolbar className={classes.toolbar}>
@@ -164,11 +220,24 @@ class Content extends React.Component {
             </div>
           </Toolbar>
           <form className={classes.form}>
-            { inputs }
+            {inputs}
+            <Button raised className={classes.formInput}>
+              Upload
+              <input
+                type="file"
+                className={classes.fileInput}
+                onChange={this.handleImageChange}
+              />
+              <FileUpload />
+            </Button>
+            {
+              this.state.pictureUrl !== '' ?
+                <img alt="anImage" className="anImage" src={this.state.pictureUrl} /> : null
+            }
           </form>
         </Paper>
       </div>
     );
   }
 }
-export default withStyles(styles)(Content);
+export default withStyles(styles)(ImageInputDialog);

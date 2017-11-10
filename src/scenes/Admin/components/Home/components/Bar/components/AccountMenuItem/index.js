@@ -28,7 +28,7 @@ class AccountMenuItem extends React.Component {
     });
   }
   render() {
-    const { user } = this.props;
+    const { user, handleLogout } = this.props;
     return (
       <div>
         <IconButton
@@ -58,7 +58,7 @@ class AccountMenuItem extends React.Component {
           </List>
           <Divider />
           <List>
-            <ListItem button>
+            <ListItem button onClick={handleLogout}>
               <ListItemText primary="로그아웃" />
             </ListItem>
           </List>

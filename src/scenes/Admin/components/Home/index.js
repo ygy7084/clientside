@@ -8,7 +8,7 @@ const styles = theme => ({
     width: '100%',
     height: '100%',
     zIndex: 1,
-    overflow: 'hidden',
+    overflow: 'auto',
   },
   appFrame: {
     position: 'relative',
@@ -42,12 +42,13 @@ class Home extends React.Component {
     });
   }
   render() {
-    const { classes, selectedMenuItem } = this.props;
+    const { classes, selectedMenuItem, handleLogout } = this.props;
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
           <Bar
             user={this.props.user}
+            handleLogout={handleLogout}
             toggleMenu={this.handleToggleMenu}
             title={this.props.selectedMenuItem.name}
           />

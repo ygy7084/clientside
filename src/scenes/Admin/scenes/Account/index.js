@@ -189,21 +189,19 @@ class Account extends React.Component {
     if (data) {
       obj = JSON.parse(JSON.stringify(data));
     }
-    switch (control) {
-      case 'createOne':
-      case 'modifyOne':
-        const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.connectedShop);
-        if (shop) {
-          obj.connectedShop = {
-            _id: shop._id,
-            name: shop.name,
-          };
-        } else {
-          obj.connectedShop = null;
-        }
-        break;
-      default:
-        break;
+    if (control === 'createOne') {
+      obj._id = undefined;
+    }
+    if (control === 'createOne' || control === 'modifyOne') {
+      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.connectedShop);
+      if (shop) {
+        obj.connectedShop = {
+          _id: shop._id,
+          name: shop.name,
+        };
+      } else {
+        obj.connectedShop = null;
+      }
     }
     switch (control) {
       case 'toCreatePage':

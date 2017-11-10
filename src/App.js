@@ -43,13 +43,13 @@ class App extends React.Component {
                 path="/"
                 render={
                 props => <Admin user={this.props.auth.user} {...props} />}
-              />
-              :
-              <Route
-                path="/"
-                render={
-                props => <Entry {...props} />}
-              />
+              /> : this.props.auth.status === 'INIT' || this.props.auth.status === 'WAITING' ?
+                null :
+                <Route
+                  path="/"
+                  render={
+                  props => <Entry {...props} />}
+                />
           }
           <SimpleMessage />
           <NoticeDialog

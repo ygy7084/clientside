@@ -28,7 +28,7 @@ const styles = theme => ({
 });
 
 const Bar = (props) => {
-  const { classes } = props;
+  const { classes, handleLogout } = props;
   return (
     <AppBar className={classes.appBar} color="primary">
       <Toolbar>
@@ -43,7 +43,7 @@ const Bar = (props) => {
         <Typography className={classes.flex} type="title" color="inherit">
           { props.title }
         </Typography>
-        <AccountMenuItem user={props.user} />
+        <AccountMenuItem user={props.user} handleLogout={handleLogout} />
       </Toolbar>
     </AppBar>
   );

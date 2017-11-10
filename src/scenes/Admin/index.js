@@ -20,6 +20,9 @@ import Home from './components/Home';
 import Dashboard from './scenes/Dashboard';
 import Account from './scenes/Account';
 import Shop from './scenes/Shop';
+import Picture from './scenes/Picture';
+import * as logoutActions from '../../data/logout/actions';
+import * as authActions from '../../data/auth/actions';
 
 const menuItems = [
   {
@@ -78,16 +81,28 @@ const menuItems = [
     name: '이미지',
     path: '/picture',
     icon: PictureIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Picture,
   },
 ];
 class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.handleClickMenu = this.handleClickMenu.bind(this);
+    this.logoutHandler = this.logoutHandler.bind(this);
   }
   handleClickMenu(path) {
     this.props.changePage(`${path}`);
+  }
+  logoutHandler() {
+    this.props.logoutRequest()
+      .then((data) => {
+        if (this.props.logout.status === 'SUCCESS') {
+          this.props.authRequest();
+        } else {
+          throw data;
+        }
+      });
   }
   render() {
     const routes = [];
@@ -113,6 +128,7 @@ class Admin extends React.Component {
                   appTitle="Manager System"
                   selectedMenuItem={Item}
                   menuItems={menuItems}
+                  handleLogout={this.logoutHandler}
                   onMenuClick={this.handleClickMenu}
                 >
                   <Item.scene
@@ -128,10 +144,15 @@ class Admin extends React.Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  logout: state.data.logout,
+});
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: path => push(path),
+  logoutRequest: logoutActions.request,
+  authRequest: authActions.request,
 }, dispatch);
 export default withRouter(connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Admin));

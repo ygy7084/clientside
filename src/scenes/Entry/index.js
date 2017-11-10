@@ -18,7 +18,7 @@ class Entry extends React.Component {
     })
       .then((data) => {
         if (this.props.login.status === 'SUCCESS') {
-          turnOnSimpleMessage.success('성공');
+          this.props.authRequest();
         } else {
           throw data;
         }

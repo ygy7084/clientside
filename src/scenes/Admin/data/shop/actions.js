@@ -175,7 +175,6 @@ const createOneFailure = (error) => {
   };
 };
 export const createOneRequest = (shop) => {
-  _.unset(shop, '_id');
   return (dispatch) => {
     dispatch(createOneWaiting());
     return fetch(`${configure.API}/shop`, {
