@@ -1,0 +1,5 @@
+.dialogImage {
+  width: 200px; }
+
+div[class^="MuiTextarea-root-"] {
+  width: 100%; }

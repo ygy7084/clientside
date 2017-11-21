@@ -50,13 +50,13 @@ const inputStructure = [
   },
   {
     name: '연결 매장',
-    key: ['connectedShop', 'name'],
+    key: ['shop', 'name'],
     type: 'string',
     form: 'autoSuggest',
     defaultValue: '',
     formOptions: [],
     formOptionsRestriction: true,
-    target: ['connectedShop'],
+    target: ['shop'],
   },
 ];
 class Account extends React.Component {
@@ -191,14 +191,14 @@ class Account extends React.Component {
       obj._id = undefined;
     }
     if (control === 'createOne' || control === 'modifyOne') {
-      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.connectedShop);
+      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.shop);
       if (shop) {
-        obj.connectedShop = {
+        obj.shop = {
           _id: shop._id,
           name: shop.name,
         };
       } else {
-        obj.connectedShop = null;
+        obj.shop = null;
       }
     }
     switch (control) {
