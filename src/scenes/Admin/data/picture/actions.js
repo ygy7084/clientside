@@ -1,6 +1,7 @@
 /* global fetch, FormData */
 import _ from 'lodash';
 import configure from '../../../../modules/configure';
+import * as loader from '../../../../data/loader/actions';
 
 export const RETRIEVE_ONE_WAITING = 'Admin/data/picture/RETRIEVE_ONE_WAITING';
 export const RETRIEVE_ONE_SUCCESS = 'Admin/data/picture/RETRIEVE_ONE_SUCCESS';
@@ -40,16 +41,17 @@ const retrieveOneFailure = (error) => {
 };
 export const retrieveOneRequest = (_id) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(retrieveOneWaiting());
     return fetch(`${configure.API}/picture/${_id}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'pragma': 'no-cache',
         'cache-control': 'no-cache',
       },
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -86,16 +88,17 @@ const retrieveManyFailure = (error) => {
 };
 export const retrieveManyRequest = () => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(retrieveManyWaiting());
     return fetch(`${configure.API}/picture`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'pragma': 'no-cache',
         'cache-control': 'no-cache',
       },
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -131,6 +134,7 @@ const modifyOneFailure = (error) => {
 };
 export const modifyOneRequest = (picture, file) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(modifyOneWaiting());
     const data = new FormData();
     if (file) {
@@ -143,6 +147,7 @@ export const modifyOneRequest = (picture, file) => {
       body: data
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -178,6 +183,7 @@ const createOneFailure = (error) => {
 };
 export const createOneRequest = (picture, file) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(createOneWaiting());
     const data = new FormData();
     if (file) {
@@ -190,6 +196,7 @@ export const createOneRequest = (picture, file) => {
       body: data,
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -225,6 +232,7 @@ const removeOneFailure = (error) => {
 };
 export const removeOneRequest = (picture) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(removeOneWaiting());
     return fetch(`${configure.API}/picture`, {
       method: 'DELETE',
@@ -235,6 +243,7 @@ export const removeOneRequest = (picture) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -270,6 +279,7 @@ const removeManyFailure = (error) => {
 };
 export const removeManyRequest = (pictures) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(removeManyWaiting());
     return fetch(`${configure.API}/picture`, {
       method: 'DELETE',
@@ -280,6 +290,7 @@ export const removeManyRequest = (pictures) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;

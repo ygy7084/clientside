@@ -30,73 +30,67 @@ const styles = theme => ({
     background: 'lightgrey',
   },
 });
-class Menu extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    const { classes, theme } = this.props;
-    const drawer = (
-      <div style={{ height: '100%' }}>
-        <div className={classes.drawerHeader} >
-          <Typography type="title" color="inherit">
-            { this.props.title }
-          </Typography>
-        </div>
-        <Divider />
-        <List>
-          {
-            this.props.menuItems.map(Item => (
-              <ListItem
-                key={Item.name}
-                button
-                className={this.props.selectedMenuItem === Item ?
-                  classes.selected : undefined
-                }
-                onClick={() => this.props.onMenuClick(Item.path)}
-              >
-                <ListItemIcon>
-                  <Item.icon />
-                </ListItemIcon>
-                <ListItemText primary={Item.name} />
-              </ListItem>
-            ))
-          }
-        </List>
+function Menu({ classes, theme, ...props }) {
+  const drawer = (
+    <div style={{ height: '100%' }}>
+      <div className={classes.drawerHeader} >
+        <Typography type="title" color="inherit">
+          { props.title }
+        </Typography>
       </div>
-    );
-    return (
-      <div>
-        <Hidden mdUp>
-          <Drawer
-            type="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={this.props.open}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            onRequestClose={this.props.toggleMenu}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden mdDown implementation="css">
-          <Drawer
-            type="permanent"
-            open
-            classes={{
-              paper: classes.drawerPaper,
-              docked: classes.docked,
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-      </div>
-    );
-  }
+      <Divider />
+      <List>
+        {
+          props.menuItems.map(Item => (
+            <ListItem
+              key={Item.name}
+              button
+              className={props.selectedMenuItem === Item ?
+                classes.selected : undefined
+              }
+              onClick={() => props.onMenuClick(Item.path)}
+            >
+              <ListItemIcon>
+                <Item.icon />
+              </ListItemIcon>
+              <ListItemText primary={Item.name} />
+            </ListItem>
+          ))
+        }
+      </List>
+    </div>
+  );
+  return (
+    <div>
+      <Hidden mdUp>
+        <Drawer
+          type="temporary"
+          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+          open={props.open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          onRequestClose={props.toggleMenu}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Hidden>
+      <Hidden mdDown implementation="css">
+        <Drawer
+          type="permanent"
+          open
+          classes={{
+            paper: classes.drawerPaper,
+            docked: classes.docked,
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Hidden>
+    </div>
+  );
 }
 export default withStyles(styles, { withTheme: true })(Menu);

@@ -1,6 +1,7 @@
 /* global fetch */
 import _ from 'lodash';
 import configure from '../../../../modules/configure';
+import * as loader from '../../../../data/loader/actions';
 
 export const RETRIEVE_ONE_WAITING = 'Admin/data/account/RETRIEVE_ONE_WAITING';
 export const RETRIEVE_ONE_SUCCESS = 'Admin/data/account/RETRIEVE_ONE_SUCCESS';
@@ -40,16 +41,17 @@ const retrieveOneFailure = (error) => {
 };
 export const retrieveOneRequest = (_id) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(retrieveOneWaiting());
     return fetch(`${configure.API}/account/${_id}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'pragma': 'no-cache',
         'cache-control': 'no-cache',
       },
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -86,16 +88,17 @@ const retrieveManyFailure = (error) => {
 };
 export const retrieveManyRequest = () => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(retrieveManyWaiting());
     return fetch(`${configure.API}/account`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'pragma': 'no-cache',
         'cache-control': 'no-cache',
       },
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -131,6 +134,7 @@ const modifyOneFailure = (error) => {
 };
 export const modifyOneRequest = (account) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(modifyOneWaiting());
     return fetch(`${configure.API}/account`, {
       method: 'PUT',
@@ -141,6 +145,7 @@ export const modifyOneRequest = (account) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -176,6 +181,7 @@ const createOneFailure = (error) => {
 };
 export const createOneRequest = (account) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(createOneWaiting());
     return fetch(`${configure.API}/account`, {
       method: 'POST',
@@ -186,6 +192,7 @@ export const createOneRequest = (account) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -221,6 +228,7 @@ const removeOneFailure = (error) => {
 };
 export const removeOneRequest = (account) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(removeOneWaiting());
     return fetch(`${configure.API}/account`, {
       method: 'DELETE',
@@ -231,6 +239,7 @@ export const removeOneRequest = (account) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;
@@ -266,6 +275,7 @@ const removeManyFailure = (error) => {
 };
 export const removeManyRequest = (accounts) => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(removeManyWaiting());
     return fetch(`${configure.API}/account`, {
       method: 'DELETE',
@@ -276,6 +286,7 @@ export const removeManyRequest = (accounts) => {
       }),
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;

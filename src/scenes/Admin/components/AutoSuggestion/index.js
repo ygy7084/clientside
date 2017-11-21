@@ -26,7 +26,6 @@ function renderInput(inputProps) {
         },
         ...other,
       }}
-      helperText={error ? '잘못된 값' : null}
     />
   );
 }
@@ -38,17 +37,19 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   return (
     <MenuItem selected={isHighlighted} component="div">
       <div>
-        {parts.map((part, index) => {
-          return part.highlight ? (
-            <span key={part.text} style={{ fontWeight: 300 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={part.text} style={{ fontWeight: 500 }}>
-              {part.text}
-            </strong>
-          );
-        })}
+        {
+          parts.map((part, index) => {
+            return part.highlight ? (
+              <span key={index} style={{ fontWeight: 300 }}>
+                {part.text}
+              </span>
+            ) : (
+              <strong key={index} style={{ fontWeight: 500 }}>
+                {part.text}
+              </strong>
+            );
+          })
+        }
       </div>
     </MenuItem>
   );
@@ -79,6 +80,7 @@ const styles = theme => ({
     position: 'absolute',
     left: 0,
     right: 0,
+    zIndex: 1000,
     maxHeight: '250px',
     overflow: 'auto',
   },

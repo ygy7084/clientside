@@ -1,16 +1,19 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import Dialog, { DialogContent, DialogActions } from 'material-ui/Dialog';
+import Dialog, {
+  DialogContent, DialogActions, withResponsiveFullScreen,
+} from 'material-ui/Dialog';
+import './styles.css';
 
-function FullSizeImage({ image, handleRequestClose, show }) {
+function FullSizeImage({ image, handleRequestClose, show, fullScreen }) {
   return (
     <Dialog
       open={show}
+      fullScreen={fullScreen}
       onRequestClose={handleRequestClose}
     >
       <DialogContent>
-        <img src={image} alt="FullSize" />
+        <img className="imgFullScreen" src={image} alt="FullSize" />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleRequestClose} color="primary">
@@ -20,4 +23,4 @@ function FullSizeImage({ image, handleRequestClose, show }) {
     </Dialog>
   );
 }
-export default FullSizeImage;
+export default withResponsiveFullScreen()(FullSizeImage);

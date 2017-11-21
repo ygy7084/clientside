@@ -1,4 +1,7 @@
 /* global fetch */
+import configure from '../../modules/configure';
+import * as loader from '../loader/actions';
+
 export const WAITING = 'data/logout/WAITING';
 export const SUCCESS = 'data/logout/SUCCESS';
 export const FAILURE = 'data/logout/FAILURE';
@@ -22,16 +25,17 @@ const failure = (error) => {
 };
 export const request = () => {
   return (dispatch) => {
+    dispatch(loader.on());
     dispatch(waiting());
-    return fetch('http://localhost:8080/auth/logout', {
+    return fetch(`${configure.SERVER}/auth/logout`, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'pragma': 'no-cache',
         'cache-control': 'no-cache',
       },
     })
       .then((res) => {
+        dispatch(loader.off());
         if (res.ok) { return res.json(); }
         return res.json().then((error) => {
           throw error;

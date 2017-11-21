@@ -8,6 +8,7 @@ import OrderIcon from 'material-ui-icons/ShoppingCart';
 import NfcIcon from 'material-ui-icons/Nfc';
 import LogIcon from 'material-ui-icons/History';
 import PictureIcon from 'material-ui-icons/Photo';
+import PlaceIcon from 'material-ui-icons/GetApp';
 import {
   Route,
   Switch,
@@ -21,6 +22,12 @@ import Dashboard from './scenes/Dashboard';
 import Account from './scenes/Account';
 import Shop from './scenes/Shop';
 import Picture from './scenes/Picture';
+import Product from './scenes/Product';
+import Customer from './scenes/Customer';
+import Order from './scenes/Order';
+import Nfc from './scenes/Nfc';
+import Place from './scenes/Place';
+import Log from './scenes/Log';
 import * as logoutActions from '../../data/logout/actions';
 import * as authActions from '../../data/auth/actions';
 
@@ -51,31 +58,36 @@ const menuItems = [
     name: '상품',
     path: '/product',
     icon: ProductIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Product,
   },
   {
     name: '고객',
     path: '/customer',
     icon: CustomerIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Customer,
   },
   {
     name: '주문',
     path: '/order',
     icon: OrderIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Order,
   },
   {
     name: 'NFC',
     path: '/nfc',
     icon: NfcIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Nfc,
   },
   {
     name: '로그',
     path: '/log',
     icon: LogIcon,
-    permission: ['manager', 'shop']
+    permission: ['manager', 'shop'],
+    scene: Log,
   },
   {
     name: '이미지',
@@ -83,6 +95,13 @@ const menuItems = [
     icon: PictureIcon,
     permission: ['manager', 'shop'],
     scene: Picture,
+  },
+  {
+    name: '장소',
+    path: '/place',
+    icon: PlaceIcon,
+    permission: ['manager', 'shop'],
+    scene: Place,
   },
 ];
 class Admin extends React.Component {

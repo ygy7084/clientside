@@ -12,46 +12,46 @@ const styles = theme => ({
     height: 36
   },
 });
-class ControlPanel extends React.Component {
-  render() {
-    const { classes, handleClickControls, mode, cannotSave } = this.props;
-    return (
-      <div>
-        <Button
-          fab
-          color="primary"
-          aria-label="arrowBack"
-          className={classes.button}
-          onClick={() => handleClickControls('goBack')}
-        >
-          <ArrowBackIcon />
-        </Button>
-        <Button
-          fab
-          color={cannotSave ? 'contrast' : 'primary'}
-          disabled={cannotSave}
-          aria-label="save"
-          className={classes.button}
-          onClick={mode === 'create' ?
-            () => handleClickControls('createOne') : () => handleClickControls('modifyOne')}
-        >
-          <SaveIcon />
-        </Button>
-        {
-          this.props.noRemove ?
-            null :
-            <Button
-              fab
-              color="accent"
-              aria-label="remove"
-              className={classes.button}
-              onClick={() => handleClickControls('removeOne')}
-            >
-              <RemoveIcon />
-            </Button>
-        }
-      </div>
-    );
-  }
+function ControlPanel(
+  {
+    classes, handleClickControls, mode, cannotSave, noRemove
+  }) {
+  return (
+    <div>
+      <Button
+        fab
+        color="primary"
+        aria-label="arrowBack"
+        className={classes.button}
+        onClick={() => handleClickControls('goBack')}
+      >
+        <ArrowBackIcon />
+      </Button>
+      <Button
+        fab
+        color={cannotSave ? 'contrast' : 'primary'}
+        disabled={cannotSave}
+        aria-label="save"
+        className={classes.button}
+        onClick={mode === 'create' ?
+          () => handleClickControls('createOne') : () => handleClickControls('modifyOne')}
+      >
+        <SaveIcon />
+      </Button>
+      {
+        noRemove ?
+          null :
+          <Button
+            fab
+            color="accent"
+            aria-label="remove"
+            className={classes.button}
+            onClick={() => handleClickControls('removeOne')}
+          >
+            <RemoveIcon />
+          </Button>
+      }
+    </div>
+  );
 }
 export default withStyles(styles)(ControlPanel);

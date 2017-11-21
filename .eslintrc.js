@@ -20,5 +20,7 @@ module.exports = {
     "arrow-body-style":0,
     "no-unused-vars":0,
     "react/no-find-dom-node":0,
+    "react/prefer-stateless-function":0,
+    "object-curly-newline":0,
   },
 };

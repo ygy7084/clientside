@@ -49,14 +49,14 @@ const inputStructure = [
     required: true,
   },
   {
-    name: '연결 매장',
-    key: ['connectedShop', 'name'],
+    name: '매장',
+    key: ['shop', 'name'],
     type: 'string',
     form: 'autoSuggest',
     defaultValue: '',
     formOptions: [],
     formOptionsRestriction: true,
-    target: ['connectedShop'],
+    target: ['shop'],
   },
 ];
 class Account extends React.Component {
@@ -81,8 +81,7 @@ class Account extends React.Component {
   accountRetrieveOne() {
     this.props.accountRetrieveOneRequest()
       .then((data) => {
-        if (this.props.accountRetrieveOne.status === 'SUCCESS') {
-        } else {
+        if (this.props.accountRetrieveOne.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -93,8 +92,7 @@ class Account extends React.Component {
   accountRetrieveMany() {
     this.props.accountRetrieveManyRequest()
       .then((data) => {
-        if (this.props.accountRetrieveMany.status === 'SUCCESS') {
-        } else {
+        if (this.props.accountRetrieveMany.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -163,7 +161,7 @@ class Account extends React.Component {
       .then((data) => {
         if (this.props.shopRetrieveMany.status === 'SUCCESS') {
           const newState = JSON.parse(JSON.stringify(this.state));
-          newState.structure.find(i => i.name === '연결 매장').formOptions =
+          newState.structure.find(i => i.name === '매장').formOptions =
             this.props.shopRetrieveMany.shops.map(shop => ({
               label: shop.name,
               value: shop.name,
@@ -193,14 +191,14 @@ class Account extends React.Component {
       obj._id = undefined;
     }
     if (control === 'createOne' || control === 'modifyOne') {
-      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.connectedShop);
+      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.shop);
       if (shop) {
-        obj.connectedShop = {
+        obj.shop = {
           _id: shop._id,
           name: shop.name,
         };
       } else {
-        obj.connectedShop = null;
+        obj.shop = null;
       }
     }
     switch (control) {

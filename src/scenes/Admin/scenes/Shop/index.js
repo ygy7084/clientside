@@ -35,12 +35,15 @@ const inputStructure = [
     key: ['phone'],
     type: 'string',
     target: ['phone'],
-    required: true,
+    onlyNumber: true,
   },
 ];
 class Shop extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      structure: inputStructure,
+    };
     this.shopRetrieveMany = this.shopRetrieveMany.bind(this);
     this.shopModifyOne = this.shopModifyOne.bind(this);
     this.shopCreateOne = this.shopCreateOne.bind(this);
@@ -55,8 +58,7 @@ class Shop extends React.Component {
   shopRetrieveOne() {
     this.props.shopRetrieveOneRequest()
       .then((data) => {
-        if (this.props.shopRetrieveOne.status === 'SUCCESS') {
-        } else {
+        if (this.props.shopRetrieveOne.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -67,8 +69,7 @@ class Shop extends React.Component {
   shopRetrieveMany() {
     this.props.shopRetrieveManyRequest()
       .then((data) => {
-        if (this.props.shopRetrieveMany.status === 'SUCCESS') {
-        } else {
+        if (this.props.shopRetrieveMany.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -174,7 +175,8 @@ class Shop extends React.Component {
     const {
       item, match, shopRetrieveMany, shopRetrieveOne, shopRetrieveOneRequest,
     } = this.props;
-    const { objArr, objArrMap } = decompose(shopRetrieveMany.shops, inputStructure);
+    const { structure } = this.state;
+    const { objArr, objArrMap } = decompose(shopRetrieveMany.shops, structure);
     return (
       <Switch>
         <Route
@@ -192,13 +194,12 @@ class Shop extends React.Component {
         />
         <Route
           path={`${match.url}/create`}
-          render={({ match }) => (
+          render={() => (
             <Dialog
               title={`${item.name} 생성`}
-              itemStructure={inputStructure}
+              itemStructure={structure}
               handleClickControls={this.handleClickControls}
               mode="create"
-              match={match}
             />
           )}
         />
@@ -207,12 +208,12 @@ class Shop extends React.Component {
           render={({ match }) => (
             <Dialog
               title={`${item.name} 수정`}
-              itemStructure={inputStructure}
+              itemStructure={structure}
               requestItem={shopRetrieveOneRequest}
-              item={decompose([shopRetrieveOne.shop], inputStructure).objArr[0]}
+              item={shopRetrieveOne.shop}
+              match={match}
               handleClickControls={this.handleClickControls}
               mode="modify"
-              match={match}
             />
           )}
         />

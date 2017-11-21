@@ -7,7 +7,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { push } from 'react-router-redux';
-import * as accountActions from '../../data/account/actions';
+import * as customerActions from '../../data/customer/actions';
 import * as shopActions from '../../data/shop/actions';
 import * as noticeDialogActions from '../../../../data/noticeDialog/actions';
 import { decompose } from '../../modules';
@@ -25,63 +25,41 @@ const inputStructure = [
     target: ['_id'],
   },
   {
-    name: 'username',
-    key: ['username'],
+    name: '번호',
+    key: ['phone'],
     type: 'string',
-    target: ['username'],
-    required: true,
+    onlyNumber: true,
+    target: ['phone'],
   },
   {
-    name: 'password',
-    key: ['password'],
+    name: '이름',
+    key: ['name'],
     type: 'string',
-    target: ['password'],
+    target: ['name'],
     required: true,
-  },
-  {
-    name: '등급',
-    key: ['level'],
-    type: 'string',
-    form: 'selection',
-    defaultValue: 'manager',
-    formOptions: [{ label: '관리자', value: 'manager' }, { label: '매장', value: 'shop' }],
-    target: ['level'],
-    required: true,
-  },
-  {
-    name: '연결 매장',
-    key: ['connectedShop', 'name'],
-    type: 'string',
-    form: 'autoSuggest',
-    defaultValue: '',
-    formOptions: [],
-    formOptionsRestriction: true,
-    target: ['connectedShop'],
   },
 ];
-class Account extends React.Component {
+class Customer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       structure: inputStructure,
     };
-    this.accountRetrieveMany = this.accountRetrieveMany.bind(this);
-    this.accountModifyOne = this.accountModifyOne.bind(this);
-    this.accountCreateOne = this.accountCreateOne.bind(this);
-    this.accountRemoveOne = this.accountRemoveOne.bind(this);
-    this.accountRemoveMany = this.accountRemoveMany.bind(this);
-    this.shopRetrieveMany = this.shopRetrieveMany.bind(this);
+    this.customerRetrieveMany = this.customerRetrieveMany.bind(this);
+    this.customerModifyOne = this.customerModifyOne.bind(this);
+    this.customerCreateOne = this.customerCreateOne.bind(this);
+    this.customerRemoveOne = this.customerRemoveOne.bind(this);
+    this.customerRemoveMany = this.customerRemoveMany.bind(this);
     this.handleClickItem = this.handleClickItem.bind(this);
     this.handleClickControls = this.handleClickControls.bind(this);
   }
   componentDidMount() {
-    this.accountRetrieveMany();
-    this.shopRetrieveMany();
+    this.customerRetrieveMany();
   }
-  accountRetrieveOne() {
-    this.props.accountRetrieveOneRequest()
+  customerRetrieveOne() {
+    this.props.customerRetrieveOneRequest()
       .then((data) => {
-        if (this.props.accountRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.customerRetrieveOne.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -89,10 +67,10 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRetrieveMany() {
-    this.props.accountRetrieveManyRequest()
+  customerRetrieveMany() {
+    this.props.customerRetrieveManyRequest()
       .then((data) => {
-        if (this.props.accountRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.customerRetrieveMany.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -100,12 +78,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountModifyOne(account) {
-    this.props.accountModifyOneRequest(account)
+  customerModifyOne(customer) {
+    this.props.customerModifyOneRequest(customer)
       .then((data) => {
-        if (this.props.accountModifyOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.customerModifyOne.status === 'SUCCESS') {
+          this.props.changePage('/customer');
+          this.customerRetrieveMany();
         } else {
           throw data;
         }
@@ -114,12 +92,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountCreateOne(account) {
-    this.props.accountCreateOneRequest(account)
+  customerCreateOne(customer) {
+    this.props.customerCreateOneRequest(customer)
       .then((data) => {
-        if (this.props.accountCreateOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.customerCreateOne.status === 'SUCCESS') {
+          this.props.changePage('/customer');
+          this.customerRetrieveMany();
         } else {
           throw data;
         }
@@ -128,12 +106,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRemoveOne(account) {
-    this.props.accountRemoveOneRequest(account)
+  customerRemoveOne(customer) {
+    this.props.customerRemoveOneRequest(customer)
       .then((data) => {
-        if (this.props.accountRemoveOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.customerRemoveOne.status === 'SUCCESS') {
+          this.props.changePage('/customer');
+          this.customerRetrieveMany();
         } else {
           throw data;
         }
@@ -142,31 +120,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRemoveMany(accounts) {
-    this.props.accountRemoveManyRequest(accounts)
+  customerRemoveMany(customers) {
+    this.props.customerRemoveManyRequest(customers)
       .then((data) => {
-        if (this.props.accountRemoveMany.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
-        } else {
-          throw data;
-        }
-      })
-      .catch((data) => {
-        this.props.showError(data);
-      });
-  }
-  shopRetrieveMany() {
-    this.props.shopRetrieveManyRequest()
-      .then((data) => {
-        if (this.props.shopRetrieveMany.status === 'SUCCESS') {
-          const newState = JSON.parse(JSON.stringify(this.state));
-          newState.structure.find(i => i.name === '연결 매장').formOptions =
-            this.props.shopRetrieveMany.shops.map(shop => ({
-              label: shop.name,
-              value: shop.name,
-            }));
-          this.setState(newState);
+        if (this.props.customerRemoveMany.status === 'SUCCESS') {
+          this.props.changePage('/customer');
+          this.customerRetrieveMany();
         } else {
           throw data;
         }
@@ -190,17 +149,6 @@ class Account extends React.Component {
     if (control === 'createOne') {
       obj._id = undefined;
     }
-    if (control === 'createOne' || control === 'modifyOne') {
-      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.connectedShop);
-      if (shop) {
-        obj.connectedShop = {
-          _id: shop._id,
-          name: shop.name,
-        };
-      } else {
-        obj.connectedShop = null;
-      }
-    }
     switch (control) {
       case 'toCreatePage':
         this.props.changePage(`${this.props.match.url}/create`);
@@ -209,16 +157,16 @@ class Account extends React.Component {
         this.props.history.goBack();
         break;
       case 'createOne':
-        this.accountCreateOne(obj);
+        this.customerCreateOne(obj);
         break;
       case 'modifyOne':
-        this.accountModifyOne(obj);
+        this.customerModifyOne(obj);
         break;
       case 'removeOne':
-        this.accountRemoveOne(obj);
+        this.customerRemoveOne(obj);
         break;
       case 'removeMany':
-        this.accountRemoveMany(obj);
+        this.customerRemoveMany(obj);
         break;
       default:
         break;
@@ -226,10 +174,10 @@ class Account extends React.Component {
   }
   render() {
     const {
-      item, match, accountRetrieveMany, accountRetrieveOne, accountRetrieveOneRequest,
+      item, match, customerRetrieveMany, customerRetrieveOne, customerRetrieveOneRequest,
     } = this.props;
     const { structure } = this.state;
-    const { objArr, objArrMap } = decompose(accountRetrieveMany.accounts, structure);
+    const { objArr, objArrMap } = decompose(customerRetrieveMany.customers, structure);
     return (
       <Switch>
         <Route
@@ -262,8 +210,8 @@ class Account extends React.Component {
             <Dialog
               title={`${item.name} 수정`}
               itemStructure={structure}
-              requestItem={accountRetrieveOneRequest}
-              item={accountRetrieveOne.account}
+              requestItem={customerRetrieveOneRequest}
+              item={customerRetrieveOne.customer}
               match={match}
               handleClickControls={this.handleClickControls}
               mode="modify"
@@ -275,28 +223,26 @@ class Account extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  accountRetrieveOne: state.admin.data.account.retrieveOne,
-  accountRetrieveMany: state.admin.data.account.retrieveMany,
-  accountModifyOne: state.admin.data.account.modifyOne,
-  accountCreateOne: state.admin.data.account.createOne,
-  accountRemoveOne: state.admin.data.account.removeOne,
-  accountRemoveMany: state.admin.data.account.removeMany,
-  shopRetrieveMany: state.admin.data.shop.retrieveMany,
+  customerRetrieveOne: state.admin.data.customer.retrieveOne,
+  customerRetrieveMany: state.admin.data.customer.retrieveMany,
+  customerModifyOne: state.admin.data.customer.modifyOne,
+  customerCreateOne: state.admin.data.customer.createOne,
+  customerRemoveOne: state.admin.data.customer.removeOne,
+  customerRemoveMany: state.admin.data.customer.removeMany,
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: path => push(path),
   noticeDialogOn: noticeDialogActions.on,
   noticeDialogOff: noticeDialogActions.off,
   showError: noticeDialogActions.error,
-  accountRetrieveOneRequest: accountActions.retrieveOneRequest,
-  accountRetrieveManyRequest: accountActions.retrieveManyRequest,
-  accountModifyOneRequest: accountActions.modifyOneRequest,
-  accountCreateOneRequest: accountActions.createOneRequest,
-  accountRemoveOneRequest: accountActions.removeOneRequest,
-  accountRemoveManyRequest: accountActions.removeManyRequest,
-  shopRetrieveManyRequest: shopActions.retrieveManyRequest,
+  customerRetrieveOneRequest: customerActions.retrieveOneRequest,
+  customerRetrieveManyRequest: customerActions.retrieveManyRequest,
+  customerModifyOneRequest: customerActions.modifyOneRequest,
+  customerCreateOneRequest: customerActions.createOneRequest,
+  customerRemoveOneRequest: customerActions.removeOneRequest,
+  customerRemoveManyRequest: customerActions.removeManyRequest,
 }, dispatch);
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Account));
+)(Customer));

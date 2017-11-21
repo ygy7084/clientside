@@ -7,7 +7,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { push } from 'react-router-redux';
-import * as accountActions from '../../data/account/actions';
+import * as placeActions from '../../data/place/actions';
 import * as shopActions from '../../data/shop/actions';
 import * as noticeDialogActions from '../../../../data/noticeDialog/actions';
 import { decompose } from '../../modules';
@@ -25,31 +25,14 @@ const inputStructure = [
     target: ['_id'],
   },
   {
-    name: 'username',
-    key: ['username'],
+    name: '이름',
+    key: ['name'],
     type: 'string',
-    target: ['username'],
+    target: ['name'],
     required: true,
   },
   {
-    name: 'password',
-    key: ['password'],
-    type: 'string',
-    target: ['password'],
-    required: true,
-  },
-  {
-    name: '등급',
-    key: ['level'],
-    type: 'string',
-    form: 'selection',
-    defaultValue: 'manager',
-    formOptions: [{ label: '관리자', value: 'manager' }, { label: '매장', value: 'shop' }],
-    target: ['level'],
-    required: true,
-  },
-  {
-    name: '연결 매장',
+    name: '매장',
     key: ['shop', 'name'],
     type: 'string',
     form: 'autoSuggest',
@@ -57,31 +40,32 @@ const inputStructure = [
     formOptions: [],
     formOptionsRestriction: true,
     target: ['shop'],
+    required: true,
   },
 ];
-class Account extends React.Component {
+class Place extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       structure: inputStructure,
     };
-    this.accountRetrieveMany = this.accountRetrieveMany.bind(this);
-    this.accountModifyOne = this.accountModifyOne.bind(this);
-    this.accountCreateOne = this.accountCreateOne.bind(this);
-    this.accountRemoveOne = this.accountRemoveOne.bind(this);
-    this.accountRemoveMany = this.accountRemoveMany.bind(this);
+    this.placeRetrieveMany = this.placeRetrieveMany.bind(this);
+    this.placeModifyOne = this.placeModifyOne.bind(this);
+    this.placeCreateOne = this.placeCreateOne.bind(this);
+    this.placeRemoveOne = this.placeRemoveOne.bind(this);
+    this.placeRemoveMany = this.placeRemoveMany.bind(this);
     this.shopRetrieveMany = this.shopRetrieveMany.bind(this);
     this.handleClickItem = this.handleClickItem.bind(this);
     this.handleClickControls = this.handleClickControls.bind(this);
   }
   componentDidMount() {
-    this.accountRetrieveMany();
+    this.placeRetrieveMany();
     this.shopRetrieveMany();
   }
-  accountRetrieveOne() {
-    this.props.accountRetrieveOneRequest()
+  placeRetrieveOne() {
+    this.props.placeRetrieveOneRequest()
       .then((data) => {
-        if (this.props.accountRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.placeRetrieveOne.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -89,10 +73,11 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRetrieveMany() {
-    this.props.accountRetrieveManyRequest()
+  placeRetrieveMany() {
+    this.props.placeRetrieveManyRequest()
       .then((data) => {
-        if (this.props.accountRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.placeRetrieveMany.status !== 'SUCCESS') {
+          console.log(this.props);
           throw data;
         }
       })
@@ -100,12 +85,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountModifyOne(account) {
-    this.props.accountModifyOneRequest(account)
+  placeModifyOne(place) {
+    this.props.placeModifyOneRequest(place)
       .then((data) => {
-        if (this.props.accountModifyOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.placeModifyOne.status === 'SUCCESS') {
+          this.props.changePage('/place');
+          this.placeRetrieveMany();
         } else {
           throw data;
         }
@@ -114,12 +99,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountCreateOne(account) {
-    this.props.accountCreateOneRequest(account)
+  placeCreateOne(place) {
+    this.props.placeCreateOneRequest(place)
       .then((data) => {
-        if (this.props.accountCreateOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.placeCreateOne.status === 'SUCCESS') {
+          this.props.changePage('/place');
+          this.placeRetrieveMany();
         } else {
           throw data;
         }
@@ -128,12 +113,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRemoveOne(account) {
-    this.props.accountRemoveOneRequest(account)
+  placeRemoveOne(place) {
+    this.props.placeRemoveOneRequest(place)
       .then((data) => {
-        if (this.props.accountRemoveOne.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.placeRemoveOne.status === 'SUCCESS') {
+          this.props.changePage('/place');
+          this.placeRetrieveMany();
         } else {
           throw data;
         }
@@ -142,12 +127,12 @@ class Account extends React.Component {
         this.props.showError(data);
       });
   }
-  accountRemoveMany(accounts) {
-    this.props.accountRemoveManyRequest(accounts)
+  placeRemoveMany(places) {
+    this.props.placeRemoveManyRequest(places)
       .then((data) => {
-        if (this.props.accountRemoveMany.status === 'SUCCESS') {
-          this.props.changePage('/account');
-          this.accountRetrieveMany();
+        if (this.props.placeRemoveMany.status === 'SUCCESS') {
+          this.props.changePage('/place');
+          this.placeRetrieveMany();
         } else {
           throw data;
         }
@@ -161,7 +146,7 @@ class Account extends React.Component {
       .then((data) => {
         if (this.props.shopRetrieveMany.status === 'SUCCESS') {
           const newState = JSON.parse(JSON.stringify(this.state));
-          newState.structure.find(i => i.name === '연결 매장').formOptions =
+          newState.structure.find(i => i.name === '매장').formOptions =
             this.props.shopRetrieveMany.shops.map(shop => ({
               label: shop.name,
               value: shop.name,
@@ -209,16 +194,16 @@ class Account extends React.Component {
         this.props.history.goBack();
         break;
       case 'createOne':
-        this.accountCreateOne(obj);
+        this.placeCreateOne(obj);
         break;
       case 'modifyOne':
-        this.accountModifyOne(obj);
+        this.placeModifyOne(obj);
         break;
       case 'removeOne':
-        this.accountRemoveOne(obj);
+        this.placeRemoveOne(obj);
         break;
       case 'removeMany':
-        this.accountRemoveMany(obj);
+        this.placeRemoveMany(obj);
         break;
       default:
         break;
@@ -226,10 +211,10 @@ class Account extends React.Component {
   }
   render() {
     const {
-      item, match, accountRetrieveMany, accountRetrieveOne, accountRetrieveOneRequest,
+      item, match, placeRetrieveMany, placeRetrieveOne, placeRetrieveOneRequest,
     } = this.props;
     const { structure } = this.state;
-    const { objArr, objArrMap } = decompose(accountRetrieveMany.accounts, structure);
+    const { objArr, objArrMap } = decompose(placeRetrieveMany.places, structure);
     return (
       <Switch>
         <Route
@@ -262,8 +247,8 @@ class Account extends React.Component {
             <Dialog
               title={`${item.name} 수정`}
               itemStructure={structure}
-              requestItem={accountRetrieveOneRequest}
-              item={accountRetrieveOne.account}
+              requestItem={placeRetrieveOneRequest}
+              item={placeRetrieveOne.place}
               match={match}
               handleClickControls={this.handleClickControls}
               mode="modify"
@@ -275,12 +260,12 @@ class Account extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  accountRetrieveOne: state.admin.data.account.retrieveOne,
-  accountRetrieveMany: state.admin.data.account.retrieveMany,
-  accountModifyOne: state.admin.data.account.modifyOne,
-  accountCreateOne: state.admin.data.account.createOne,
-  accountRemoveOne: state.admin.data.account.removeOne,
-  accountRemoveMany: state.admin.data.account.removeMany,
+  placeRetrieveOne: state.admin.data.place.retrieveOne,
+  placeRetrieveMany: state.admin.data.place.retrieveMany,
+  placeModifyOne: state.admin.data.place.modifyOne,
+  placeCreateOne: state.admin.data.place.createOne,
+  placeRemoveOne: state.admin.data.place.removeOne,
+  placeRemoveMany: state.admin.data.place.removeMany,
   shopRetrieveMany: state.admin.data.shop.retrieveMany,
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -288,15 +273,15 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   noticeDialogOn: noticeDialogActions.on,
   noticeDialogOff: noticeDialogActions.off,
   showError: noticeDialogActions.error,
-  accountRetrieveOneRequest: accountActions.retrieveOneRequest,
-  accountRetrieveManyRequest: accountActions.retrieveManyRequest,
-  accountModifyOneRequest: accountActions.modifyOneRequest,
-  accountCreateOneRequest: accountActions.createOneRequest,
-  accountRemoveOneRequest: accountActions.removeOneRequest,
-  accountRemoveManyRequest: accountActions.removeManyRequest,
+  placeRetrieveOneRequest: placeActions.retrieveOneRequest,
+  placeRetrieveManyRequest: placeActions.retrieveManyRequest,
+  placeModifyOneRequest: placeActions.modifyOneRequest,
+  placeCreateOneRequest: placeActions.createOneRequest,
+  placeRemoveOneRequest: placeActions.removeOneRequest,
+  placeRemoveManyRequest: placeActions.removeManyRequest,
   shopRetrieveManyRequest: shopActions.retrieveManyRequest,
 }, dispatch);
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Account));
+)(Place));

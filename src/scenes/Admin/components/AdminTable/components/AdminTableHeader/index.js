@@ -58,9 +58,9 @@ class AdminTableHeader extends React.Component {
                         enterDelay={300}
                       >
                         <TableSortLabel
-                          active={orderBy === value.label}
+                          active={orderBy === value.key}
                           direction={order}
-                          onClick={this.createSortHandler(value.label)}
+                          onClick={this.createSortHandler(value.key)}
                         >
                           {value.label}
                         </TableSortLabel>

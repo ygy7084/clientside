@@ -33,7 +33,9 @@ const styles = theme => ({
   },
 });
 const AdminTableToolbar = (props) => {
-  const { title, numSelected, classes, handleClickControls } = props;
+  const {
+    title, numSelected, classes, handleClickControls
+  } = props;
   return (
     <Toolbar
       className={classNames(classes.root, {

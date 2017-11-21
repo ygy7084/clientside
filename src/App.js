@@ -26,9 +26,6 @@ const theme = createMuiTheme({
 });
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   componentWillMount() {
     this.props.authRequest();
   }

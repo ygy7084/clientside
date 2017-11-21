@@ -6,13 +6,8 @@ import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import { withStyles } from 'material-ui/styles';
-import AddIcon from 'material-ui-icons/Add';
-import Button from 'material-ui/Button';
-import ControlPanel from '../../components/ControlPanel';
-import AutoSuggestion from '../../components/AutoSuggestion';
-import ImageTileList from './components/ImageTileList';
-import ImageXaxisList from './components/ImageXaxisList';
-import FullSizeImage from './components/FullSizeImage';
+import ControlPanel from '../../../../components/ControlPanel';
+import AutoSuggestion from '../../../../components/AutoSuggestion';
 import './styles.css';
 
 const drawerWidth = 240;
@@ -41,47 +36,33 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
 });
-function isError(obj, value) {
-  let r =
-    obj.formOptionsRestriction === true
-    && value !== undefined
-    && value !== null
-    && obj.formOptions.findIndex(o => o.value === obj.value) < 0;
-  if (value === '') {
-    r = !!obj.required;
-  }
-  return r;
-}
-function initialize(structure, item) {
-  const newArr = [];
-  structure.forEach((o) => {
-    const obj = o;
-    let value;
-    if (item) {
-      value = _.get(item, o.key);
-    } else {
-      value = o.defaultValue || '';
-    }
-    obj.value = value;
-    obj.error = isError(o, value);
-    newArr.push(obj);
-  });
-  return newArr;
-}
 class Dialog extends React.Component {
   constructor(props) {
     super(props);
-    const initState = initialize(props.itemStructure, props.item);
     this.state = {
-      inputs: initState,
-      showImagePicker: false,
-      showFullSizeImage: false,
-      fullSizeImage: null,
+      shop: {},
+      products: [],
+      customer: {},
+      nfc: {},
+      place: {},
+      datetime: undefined,
+      message: '',
+      status: 0,
     };
+    if (this.props.item) {
+      this.state = {
+        shop: this.props.item.shop || {},
+        products: this.props.item.products || [],
+        customer: this.props.item.customer || {},
+        nfc: this.props.item.nfc || {},
+        place: this.props.item.place || {},
+        datetime: this.props.item.datetime || null,
+        message: this.props.item.message || '',
+        status: this.props.item.status || 0,
+      };
+    }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClickControls = this.handleClickControls.bind(this);
-    this.handleOpenFullSizeImage = this.handleOpenFullSizeImage.bind(this);
-    this.handleCloseFullSizeImage = this.handleCloseFullSizeImage.bind(this);
   }
   componentDidMount() {
     if (this.props.mode === 'modify') {
@@ -89,163 +70,75 @@ class Dialog extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const initState = initialize(nextProps.itemStructure, nextProps.item);
-    this.setState({
-      inputs: initState,
-    });
+    if (nextProps.item) {
+      this.setState({
+        shop: nextProps.item.shop || {},
+        products: nextProps.item.products || [],
+        customer: nextProps.item.customer || {},
+        nfc: nextProps.item.nfc || {},
+        place: nextProps.item.place || {},
+        datetime: nextProps.item.datetime || null,
+        message: nextProps.item.message || '',
+        status: nextProps.item.status || 0,
+      });
+    }
   }
   handleInputChange(value, key) {
-    this.setState((prevState) => {
-      const prevInputs = prevState.inputs;
-      const found = prevInputs.find(o => o.name === key);
-      found.value = value;
-      found.error = isError(found, value);
-      if (found.filterTo) {
-        const f = prevInputs.find(o => o.name === found.filterTo);
-        f.value = '';
-      }
-      return { inputs: prevInputs };
-    });
+    if (key === 'shop') {
+      const shop = this.props.data.shops.find(o => o.name === value);
+      this.setState({
+        shop:
+          { _id: shop ? shop._id : '', name: value } });
+    } else if (key === 'customer') {
+      const customer = this.props.data.customers.find(o => o.name === value);
+      this.setState({
+        customer:
+          { _id: customer ? customer._id : '', name: value },
+      });
+    } else if (key === 'nfc') {
+      const nfc = this.props.data.nfcs.find(o => o.name === value);
+      this.setState({
+        nfc:
+          { _id: nfc ? nfc._id : '', name: value },
+      });
+    } else if (key === 'place') {
+      const place = this.props.data.places.find(o => o.name === value);
+      this.setState({
+        place:
+          { _id: place ? place._id : '', name: value },
+      });
+    } else if (key === 'status') {
+      this.setState({
+        status: value,
+      });
+    }
   }
   handleClickControls(clicked) {
-    const result = {};
-    this.state.inputs.forEach(o =>
-      _.set(result, o.target, o.value)
-    );
+    let result = {};
     switch (clicked) {
       default:
+        result = this.state;
+        if (this.props.item) {
+          result._id = this.props.item._id;
+        } else {
+          result.datetime = new Date();
+        }
         this.props.handleClickControls(clicked, result);
         break;
     }
   }
-  handleOpenFullSizeImage(image) {
-    this.setState({
-      showFullSizeImage: true,
-      fullSizeImage: image,
-    });
-  }
-  handleCloseFullSizeImage() {
-    this.setState({
-      showFullSizeImage: false,
-    });
-  }
   render() {
     const {
-      classes, title, item, mode
+      classes, title, item, mode, data
     } = this.props;
-    const {
-      inputs: inputState,
-    } = this.state;
-    const inputs = [];
-    inputState.forEach((i) => {
-      if (!i.form) {
-        inputs.push(
-          <TextField
-            key={i.name}
-            id={i.name}
-            label={i.name}
-            type={i.type === 'number' ? 'number' : undefined}
-            className={classes.formInput}
-            multiline={i.multiline}
-            fullWidth
-            value={!item && i.value === '' ? i.defaultValue || '' : i.value || ''}
-            disabled={i.readOnly}
-            onChange={e => this.handleInputChange(
-              i.onlyNumber ? e.target.value.replace(/\D/g, '') : e.target.value, i.name)}
-          />
-        );
-      } else if (i.form === 'selection') {
-        let options = i.formOptions;
-        if (i.filteredBy) {
-          options = [];
-          const found = inputState.find(o => o.name === i.filteredBy);
-          if (found && found.value) {
-            options = i.formOptions.filter(o => o.filter === found.value);
-          }
-        }
-        inputs.push(
-          <TextField
-            key={i.name}
-            id={i.name}
-            label={i.name}
-            select
-            className={classes.formInput}
-            fullWidth
-            value={!item && i.value === '' ? i.defaultValue : i.value ? i.value : ''}
-            disabled={i.readOnly}
-            onChange={e => this.handleInputChange(e.target.value, i.name)}
-          >
-            {
-              options.map(option => (
-                <MenuItem key={`${option.label}`} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))
-            }
-          </TextField>
-        );
-      } else if (i.form === 'autoSuggest') {
-        inputs.push(
-          <AutoSuggestion
-            key={i.name}
-            id={i.name}
-            label={i.name}
-            className={classes.formInput}
-            suggestions={i.formOptions}
-            onChange={value => this.handleInputChange(value, i.name)}
-            value={!item && i.value === '' ? i.defaultValue : i.value ? i.value : ''}
-            error={i.error}
-          />);
-      } else if (i.form === 'pictures') {
-        inputs.push(
-          <div key={i.name}>
-            <Button
-              color="primary"
-              aria-label="add"
-              className={classes.imgAddButton}
-              raised
-              onClick={
-                () => this.setState({ showImagePicker: true })
-              }
-            >
-              이미지
-              <AddIcon />
-            </Button>
-            {
-              i.value && i.value.length ?
-                <div>
-                  <h4>이미지 개수 : {i.value.length}</h4>
-                  <ImageXaxisList
-                    images={i.value}
-                    handleClickImage={this.handleOpenFullSizeImage}
-                  />
-                </div>
-                  : null
-
-            }
-            <ImageTileList
-              dialog
-              selection
-              show={this.state.showImagePicker}
-              images={i.formOptions}
-              handleRequestClose={() => this.setState({ showImagePicker: false })}
-              handleOpenFullSizeImage={this.handleOpenFullSizeImage}
-              handleImageSelect={s => this.handleInputChange(s, i.name)}
-            />
-          </div>
-        );
-      }
-      inputs.push(<br key={`${i.name}br`} />);
-    });
+    console.log(item);
     return (
       <div>
         <ControlPanel
           handleClickControls={this.handleClickControls}
           noRemove={!item}
           mode={mode}
-          cannotSave={inputState.map(o => o.error).reduce((a, c) => {
-            return !!(a || c);
-          })}
+          cannotSave={false}
         />
         <Paper className={classes.root}>
           <Toolbar className={classes.toolbar}>
@@ -254,14 +147,126 @@ class Dialog extends React.Component {
             </div>
           </Toolbar>
           <form className={classes.form}>
-            { inputs }
+            <div>
+              <h4>상태</h4>
+              <TextField
+                label="상태"
+                select
+                className={classes.formInput}
+                fullWidth
+                value={this.state.status}
+                onChange={e => this.handleInputChange(e.target.value, "status")}
+              >
+                <MenuItem value={0}>
+                  주문됨
+                </MenuItem>
+                <MenuItem value={1}>
+                  배송 완료
+                </MenuItem>
+                <MenuItem value={2}>
+                  취소됨
+                </MenuItem>
+              </TextField>
+              <h4>매장</h4>
+              <TextField
+                label="매장 _id"
+                className={classes.formInput}
+                fullWidth
+                value={this.state.shop._id || ''}
+                disabled
+              />
+              <AutoSuggestion
+                label="매장 이름"
+                className={classes.formInput}
+                suggestions={data && data.shops ? data.shops.map(shop => ({
+                  label: shop.name,
+                  value: shop._id,
+                })) : []}
+                onChange={value => this.handleInputChange(value, 'shop')}
+                value={this.state.shop.name || ''}
+              />
+            </div>
+            <div>
+              <h4>고객</h4>
+              <TextField
+                label="고객 _id"
+                className={classes.formInput}
+                fullWidth
+                value={this.state.customer._id || ''}
+                disabled
+              />
+              <AutoSuggestion
+                label="고객 이름"
+                className={classes.formInput}
+                suggestions={data && data.customers ? data.customers.map(customer => ({
+                  label: customer.name,
+                  value: customer._id,
+                })) : []}
+                onChange={value => this.handleInputChange(value, 'customer')}
+                value={this.state.customer.name || ''}
+              />
+            </div>
+            <div>
+              <h4>상품</h4>
+              {
+                this.state.products && this.state.products.length ?
+                  this.state.products.map(o =>
+                    <p key={o.name}>{o.name}</p>
+                  ) : null
+              }
+            </div>
+            <div>
+              <h4>NFC</h4>
+              <TextField
+                label="NFC _id"
+                className={classes.formInput}
+                fullWidth
+                value={this.state.nfc._id || ''}
+                disabled
+              />
+              <AutoSuggestion
+                label="NFC"
+                className={classes.formInput}
+                suggestions={data && data.nfcs ? data.nfcs.map(nfc => ({
+                  label: nfc.name,
+                  value: nfc._id,
+                })) : []}
+                onChange={value => this.handleInputChange(value, 'nfc')}
+                value={this.state.nfc.name || ''}
+              />
+            </div>
+            <div>
+              <h4>장소</h4>
+              <TextField
+                label="장소 _id"
+                className={classes.formInput}
+                fullWidth
+                value={this.state.place._id || ''}
+                disabled
+              />
+              <AutoSuggestion
+                label="장소 이름"
+                className={classes.formInput}
+                suggestions={data && data.places ? data.places.map(place => ({
+                  label: place.name,
+                  value: place._id,
+                })) : []}
+                onChange={value => this.handleInputChange(value, 'place')}
+                value={this.state.place.name || ''}
+              />
+            </div>
+            <div>
+              <h4>시각</h4>
+              <TextField
+                label="시각"
+                className={classes.formInput}
+                fullWidth
+                value={this.state.datetime ? new Date(this.state.datetime).toLocaleString() : ''}
+                disabled
+              />
+            </div>
           </form>
         </Paper>
-        <FullSizeImage
-          show={this.state.showFullSizeImage}
-          image={this.state.fullSizeImage}
-          handleRequestClose={this.handleCloseFullSizeImage}
-        />
       </div>
     );
   }

@@ -32,7 +32,7 @@ const styles = theme => ({
     background: 'none',
   },
 });
-class ImagePicker extends React.Component {
+class ImageTileList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,4 +117,4 @@ class ImagePicker extends React.Component {
     ) : content;
   }
 }
-export default withStyles(styles)(ImagePicker);
+export default withStyles(styles)(ImageTileList);

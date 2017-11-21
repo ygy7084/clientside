@@ -53,7 +53,7 @@ class BasicTableControlPanel extends React.Component {
         </Button>
       </div>
     );
-    // 기타 기능 버튼 
+    // 기타 기능 버튼
     // return (
     //   <div>
     //     <Button

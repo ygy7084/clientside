@@ -23,11 +23,11 @@ import {
 const initialState = {
   retrieveOne: {
     status: 'INIT',
-    account: {},
+    place: {},
   },
   retrieveMany: {
     status: 'INIT',
-    accounts: [],
+    places: [],
   },
   modifyOne: {
     status: 'INIT',
@@ -55,14 +55,14 @@ export const reducer = (state = initialState, action) => {
       return update(state, {
         retrieveOne: {
           status: { $set: 'SUCCESS' },
-          account: { $set: action.account },
+          place: { $set: action.place },
         },
       });
     case RETRIEVE_ONE_FAILURE:
       return update(state, {
         retrieveOne: {
           status: { $set: 'FAILURE' },
-          account: { $set: {} }
+          place: { $set: {} }
         },
       });
     case RETRIEVE_MANY_WAITING:
@@ -75,14 +75,14 @@ export const reducer = (state = initialState, action) => {
       return update(state, {
         retrieveMany: {
           status: { $set: 'SUCCESS' },
-          accounts: { $set: action.accounts },
+          places: { $set: action.places },
         },
       });
     case RETRIEVE_MANY_FAILURE:
       return update(state, {
         retrieveMany: {
           status: { $set: 'FAILURE' },
-          accounts: { $set: [] },
+          places: { $set: [] },
         },
       });
     case MODIFY_ONE_WAITING:

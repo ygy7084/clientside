@@ -8,10 +8,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { push } from 'react-router-redux';
 import * as shopActions from '../../data/shop/actions';
+import * as productActions from '../../data/product/actions';
+import * as pictureActions from '../../data/picture/actions';
 import * as noticeDialogActions from '../../../../data/noticeDialog/actions';
 import { decompose } from '../../modules';
 import AdminTable from '../../components/AdminTable';
 import Dialog from '../../components/Dialog';
+import configure from '../../../../modules/configure';
 
 const inputStructure = [
   {
@@ -24,62 +27,82 @@ const inputStructure = [
     target: ['_id'],
   },
   {
-    name: 'name',
+    name: '이름',
     key: ['name'],
     type: 'string',
     target: ['name'],
     required: true,
   },
   {
-    name: 'phone',
-    key: ['phone'],
+    name: '설명',
+    key: ['description'],
+    tableView: false,
     type: 'string',
-    target: ['phone'],
-    required: true,
+    multiline: true,
+    target: ['description'],
+  },
+  {
+    name: '가격',
+    key: ['price'],
+    type: 'number',
+    target: ['price'],
+  },
+  {
+    name: '매장',
+    key: ['shop', 'name'],
+    type: 'string',
+    form: 'autoSuggest',
+    defaultValue: '',
+    formOptions: [],
+    formOptionsRestriction: true,
+    target: ['shop'],
+  },
+  {
+    name: '사진 개수',
+    key: ['pictures'],
+    type: 'array',
+    defaultValue: [],
+    tableFunc: arr => arr.length,
+    form: 'pictures',
+    formOptions: [],
+    target: ['pictures'],
+    readOnly: true,
   },
 ];
-class Shop extends React.Component {
+class Product extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      structure: inputStructure,
+    };
     this.shopRetrieveMany = this.shopRetrieveMany.bind(this);
-    this.shopModifyOne = this.shopModifyOne.bind(this);
-    this.shopCreateOne = this.shopCreateOne.bind(this);
-    this.shopRemoveOne = this.shopRemoveOne.bind(this);
-    this.shopRemoveMany = this.shopRemoveMany.bind(this);
+    this.pictureRetrieveMany = this.pictureRetrieveMany.bind(this);
+    this.productRetrieveMany = this.productRetrieveMany.bind(this);
+    this.productModifyOne = this.productModifyOne.bind(this);
+    this.productCreateOne = this.productCreateOne.bind(this);
+    this.productRemoveOne = this.productRemoveOne.bind(this);
+    this.productRemoveMany = this.productRemoveMany.bind(this);
     this.handleClickItem = this.handleClickItem.bind(this);
     this.handleClickControls = this.handleClickControls.bind(this);
   }
   componentDidMount() {
+    this.productRetrieveMany();
     this.shopRetrieveMany();
-  }
-  shopRetrieveOne() {
-    this.props.shopRetrieveOneRequest()
-      .then((data) => {
-        if (this.props.shopRetrieveOne.status !== 'SUCCESS') {
-          throw data;
-        }
-      })
-      .catch((data) => {
-        this.props.showError(data);
-      });
+    this.pictureRetrieveMany();
   }
   shopRetrieveMany() {
     this.props.shopRetrieveManyRequest()
       .then((data) => {
-        if (this.props.shopRetrieveMany.status !== 'SUCCESS') {
-          throw data;
-        }
-      })
-      .catch((data) => {
-        this.props.showError(data);
-      });
-  }
-  shopModifyOne(shop) {
-    this.props.shopModifyOneRequest(shop)
-      .then((data) => {
-        if (this.props.shopModifyOne.status === 'SUCCESS') {
-          this.props.changePage('/shop');
-          this.shopRetrieveMany();
+        if (this.props.shopRetrieveMany.status === 'SUCCESS') {
+          this.setState((state) => {
+            const newS = state;
+            newS.structure.find(i => i.name === '매장').formOptions =
+              this.props.shopRetrieveMany.shops.map(shop => ({
+                label: shop.name,
+                value: shop.name,
+              }));
+            return newS;
+          });
         } else {
           throw data;
         }
@@ -88,12 +111,54 @@ class Shop extends React.Component {
         this.props.showError(data);
       });
   }
-  shopCreateOne(shop) {
-    this.props.shopCreateOneRequest(shop)
+  pictureRetrieveMany() {
+    this.props.pictureRetrieveManyRequest()
       .then((data) => {
-        if (this.props.shopCreateOne.status === 'SUCCESS') {
-          this.props.changePage('/shop');
-          this.shopRetrieveMany();
+        if (this.props.pictureRetrieveMany.status !== 'SUCCESS') {
+          throw data;
+        } else {
+          this.setState((prevState) => {
+            const { structure } = prevState;
+            structure.find(i => i.name === '사진 개수').formOptions =
+              this.props.pictureRetrieveMany.pictures.map(({ path, fileName }) =>
+                `${configure.SERVER}${path}/${fileName}?${new Date().getTime()}`
+              );
+            return { structure };
+          });
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
+  productRetrieveOne() {
+    this.props.productRetrieveOneRequest()
+      .then((data) => {
+        if (this.props.productRetrieveOne.status !== 'SUCCESS') {
+          throw data;
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
+  productRetrieveMany() {
+    this.props.productRetrieveManyRequest()
+      .then((data) => {
+        if (this.props.productRetrieveMany.status !== 'SUCCESS') {
+          throw data;
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
+  productModifyOne(product) {
+    this.props.productModifyOneRequest(product)
+      .then((data) => {
+        if (this.props.productModifyOne.status === 'SUCCESS') {
+          this.props.changePage('/product');
+          this.productRetrieveMany();
         } else {
           throw data;
         }
@@ -102,12 +167,12 @@ class Shop extends React.Component {
         this.props.showError(data);
       });
   }
-  shopRemoveOne(shop) {
-    this.props.shopRemoveOneRequest(shop)
+  productCreateOne(product) {
+    this.props.productCreateOneRequest(product)
       .then((data) => {
-        if (this.props.shopRemoveOne.status === 'SUCCESS') {
-          this.props.changePage('/shop');
-          this.shopRetrieveMany();
+        if (this.props.productCreateOne.status === 'SUCCESS') {
+          this.props.changePage('/product');
+          this.productRetrieveMany();
         } else {
           throw data;
         }
@@ -116,12 +181,26 @@ class Shop extends React.Component {
         this.props.showError(data);
       });
   }
-  shopRemoveMany(shops) {
-    this.props.shopRemoveManyRequest(shops)
+  productRemoveOne(product) {
+    this.props.productRemoveOneRequest(product)
       .then((data) => {
-        if (this.props.shopRemoveMany.status === 'SUCCESS') {
-          this.props.changePage('/shop');
-          this.shopRetrieveMany();
+        if (this.props.productRemoveOne.status === 'SUCCESS') {
+          this.props.changePage('/product');
+          this.productRetrieveMany();
+        } else {
+          throw data;
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
+  productRemoveMany(products) {
+    this.props.productRemoveManyRequest(products)
+      .then((data) => {
+        if (this.props.productRemoveMany.status === 'SUCCESS') {
+          this.props.changePage('/product');
+          this.productRetrieveMany();
         } else {
           throw data;
         }
@@ -145,6 +224,17 @@ class Shop extends React.Component {
     if (control === 'createOne') {
       obj._id = undefined;
     }
+    if (control === 'createOne' || control === 'modifyOne') {
+      const shop = this.props.shopRetrieveMany.shops.find(shop => shop.name === data.shop);
+      if (shop) {
+        obj.shop = {
+          _id: shop._id,
+          name: shop.name,
+        };
+      } else {
+        obj.shop = null;
+      }
+    }
     switch (control) {
       case 'toCreatePage':
         this.props.changePage(`${this.props.match.url}/create`);
@@ -153,16 +243,16 @@ class Shop extends React.Component {
         this.props.history.goBack();
         break;
       case 'createOne':
-        this.shopCreateOne(data);
+        this.productCreateOne(obj);
         break;
       case 'modifyOne':
-        this.shopModifyOne(data);
+        this.productModifyOne(obj);
         break;
       case 'removeOne':
-        this.shopRemoveOne(data);
+        this.productRemoveOne(obj);
         break;
       case 'removeMany':
-        this.shopRemoveMany(data);
+        this.productRemoveMany(obj);
         break;
       default:
         break;
@@ -170,9 +260,10 @@ class Shop extends React.Component {
   }
   render() {
     const {
-      item, match, shopRetrieveMany, shopRetrieveOne, shopRetrieveOneRequest,
+      item, match, productRetrieveMany, productRetrieveOne, productRetrieveOneRequest,
     } = this.props;
-    const { objArr, objArrMap } = decompose(shopRetrieveMany.shops, inputStructure);
+    const { structure } = this.state;
+    const { objArr, objArrMap } = decompose(productRetrieveMany.products, structure);
     return (
       <Switch>
         <Route
@@ -190,13 +281,12 @@ class Shop extends React.Component {
         />
         <Route
           path={`${match.url}/create`}
-          render={({ match }) => (
+          render={() => (
             <Dialog
               title={`${item.name} 생성`}
-              itemStructure={inputStructure}
+              itemStructure={structure}
               handleClickControls={this.handleClickControls}
               mode="create"
-              match={match}
             />
           )}
         />
@@ -205,12 +295,12 @@ class Shop extends React.Component {
           render={({ match }) => (
             <Dialog
               title={`${item.name} 수정`}
-              itemStructure={inputStructure}
-              requestItem={shopRetrieveOneRequest}
-              item={decompose([shopRetrieveOne.shop], inputStructure).objArr[0]}
+              itemStructure={structure}
+              requestItem={productRetrieveOneRequest}
+              item={productRetrieveOne.product}
+              match={match}
               handleClickControls={this.handleClickControls}
               mode="modify"
-              match={match}
             />
           )}
         />
@@ -219,26 +309,30 @@ class Shop extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  shopRetrieveOne: state.admin.data.shop.retrieveOne,
   shopRetrieveMany: state.admin.data.shop.retrieveMany,
-  shopModifyOne: state.admin.data.shop.modifyOne,
-  shopCreateOne: state.admin.data.shop.createOne,
-  shopRemoveOne: state.admin.data.shop.removeOne,
-  shopRemoveMany: state.admin.data.shop.removeMany,
+  pictureRetrieveMany: state.admin.data.picture.retrieveMany,
+  productRetrieveOne: state.admin.data.product.retrieveOne,
+  productRetrieveMany: state.admin.data.product.retrieveMany,
+  productModifyOne: state.admin.data.product.modifyOne,
+  productCreateOne: state.admin.data.product.createOne,
+  productRemoveOne: state.admin.data.product.removeOne,
+  productRemoveMany: state.admin.data.product.removeMany,
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: path => push(path),
   noticeDialogOn: noticeDialogActions.on,
   noticeDialogOff: noticeDialogActions.off,
   showError: noticeDialogActions.error,
-  shopRetrieveOneRequest: shopActions.retrieveOneRequest,
   shopRetrieveManyRequest: shopActions.retrieveManyRequest,
-  shopModifyOneRequest: shopActions.modifyOneRequest,
-  shopCreateOneRequest: shopActions.createOneRequest,
-  shopRemoveOneRequest: shopActions.removeOneRequest,
-  shopRemoveManyRequest: shopActions.removeManyRequest,
+  pictureRetrieveManyRequest: pictureActions.retrieveManyRequest,
+  productRetrieveOneRequest: productActions.retrieveOneRequest,
+  productRetrieveManyRequest: productActions.retrieveManyRequest,
+  productModifyOneRequest: productActions.modifyOneRequest,
+  productCreateOneRequest: productActions.createOneRequest,
+  productRemoveOneRequest: productActions.removeOneRequest,
+  productRemoveManyRequest: productActions.removeManyRequest,
 }, dispatch);
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Shop));
+)(Product));

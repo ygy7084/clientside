@@ -56,17 +56,20 @@ function isError(obj, value) {
   return r;
 }
 function initialize(structure, item) {
+  const newArr = [];
   structure.forEach((o) => {
+    const obj = o;
     let value;
     if (item) {
       value = _.get(item, o.key);
     } else {
       value = o.defaultValue || '';
     }
-    o.value = value;
-    o.error = isError(o, value);
+    obj.value = value;
+    obj.error = isError(o, value);
+    newArr.push(obj);
   });
-  return structure;
+  return newArr;
 }
 class ImageInputDialog extends React.Component {
   constructor(props) {
@@ -122,14 +125,15 @@ class ImageInputDialog extends React.Component {
     this.state.inputs.forEach(o =>
       _.set(result, o.target, o.value)
     );
-    let file;
+    let f;
     if ((this.props.mode === 'create' && this.state.file) ||
       (this.props.mode === 'modify' && this.state.pictureChanged)) {
-      file = this.state.file;
+      const { file } = this.state;
+      f = file;
     }
     switch (clicked) {
       default:
-        this.props.handleClickControls(clicked, result, file);
+        this.props.handleClickControls(clicked, result, f);
         break;
     }
   }

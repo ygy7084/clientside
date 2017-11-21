@@ -60,8 +60,7 @@ class Picture extends React.Component {
   pictureRetrieveOne() {
     this.props.pictureRetrieveOneRequest()
       .then((data) => {
-        if (this.props.pictureRetrieveOne.status === 'SUCCESS') {
-        } else {
+        if (this.props.pictureRetrieveOne.status !== 'SUCCESS') {
           throw data;
         }
       })
@@ -72,8 +71,7 @@ class Picture extends React.Component {
   pictureRetrieveMany() {
     this.props.pictureRetrieveManyRequest()
       .then((data) => {
-        if (this.props.pictureRetrieveMany.status === 'SUCCESS') {
-        } else {
+        if (this.props.pictureRetrieveMany.status !== 'SUCCESS') {
           throw data;
         }
       })

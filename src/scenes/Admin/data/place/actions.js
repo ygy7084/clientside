@@ -3,34 +3,34 @@ import _ from 'lodash';
 import configure from '../../../../modules/configure';
 import * as loader from '../../../../data/loader/actions';
 
-export const RETRIEVE_ONE_WAITING = 'Admin/data/account/RETRIEVE_ONE_WAITING';
-export const RETRIEVE_ONE_SUCCESS = 'Admin/data/account/RETRIEVE_ONE_SUCCESS';
-export const RETRIEVE_ONE_FAILURE = 'Admin/data/account/RETRIEVE_ONE_FAILURE';
-export const RETRIEVE_MANY_WAITING = 'Admin/data/account/RETRIEVE_MANY_WAITING';
-export const RETRIEVE_MANY_SUCCESS = 'Admin/data/account/RETRIEVE_MANY_SUCCESS';
-export const RETRIEVE_MANY_FAILURE = 'Admin/data/account/RETRIEVE_MANY_FAILURE';
-export const MODIFY_ONE_WAITING = 'Admin/data/account/MODIFY_ONE_WAITING';
-export const MODIFY_ONE_SUCCESS = 'Admin/data/account/MODIFY_ONE_SUCCESS';
-export const MODIFY_ONE_FAILURE = 'Admin/data/account/MODIFY_ONE_FAILURE';
-export const CREATE_ONE_WAITING = 'Admin/data/account/CREATE_ONE_WAITING';
-export const CREATE_ONE_SUCCESS = 'Admin/data/account/CREATE_ONE_SUCCESS';
-export const CREATE_ONE_FAILURE = 'Admin/data/account/CREATE_ONE_FAILURE';
-export const REMOVE_ONE_WAITING = 'Admin/data/account/REMOVE_ONE_WAITING';
-export const REMOVE_ONE_SUCCESS = 'Admin/data/account/REMOVE_ONE_SUCCESS';
-export const REMOVE_ONE_FAILURE = 'Admin/data/account/REMOVE_ONE_FAILURE';
-export const REMOVE_MANY_WAITING = 'Admin/data/account/REMOVE_MANY_WAITING';
-export const REMOVE_MANY_SUCCESS = 'Admin/data/account/REMOVE_MANY_SUCCESS';
-export const REMOVE_MANY_FAILURE = 'Admin/data/account/REMOVE_MANY_FAILURE';
+export const RETRIEVE_ONE_WAITING = 'Admin/data/place/RETRIEVE_ONE_WAITING';
+export const RETRIEVE_ONE_SUCCESS = 'Admin/data/place/RETRIEVE_ONE_SUCCESS';
+export const RETRIEVE_ONE_FAILURE = 'Admin/data/place/RETRIEVE_ONE_FAILURE';
+export const RETRIEVE_MANY_WAITING = 'Admin/data/place/RETRIEVE_MANY_WAITING';
+export const RETRIEVE_MANY_SUCCESS = 'Admin/data/place/RETRIEVE_MANY_SUCCESS';
+export const RETRIEVE_MANY_FAILURE = 'Admin/data/place/RETRIEVE_MANY_FAILURE';
+export const MODIFY_ONE_WAITING = 'Admin/data/place/MODIFY_ONE_WAITING';
+export const MODIFY_ONE_SUCCESS = 'Admin/data/place/MODIFY_ONE_SUCCESS';
+export const MODIFY_ONE_FAILURE = 'Admin/data/place/MODIFY_ONE_FAILURE';
+export const CREATE_ONE_WAITING = 'Admin/data/place/CREATE_ONE_WAITING';
+export const CREATE_ONE_SUCCESS = 'Admin/data/place/CREATE_ONE_SUCCESS';
+export const CREATE_ONE_FAILURE = 'Admin/data/place/CREATE_ONE_FAILURE';
+export const REMOVE_ONE_WAITING = 'Admin/data/place/REMOVE_ONE_WAITING';
+export const REMOVE_ONE_SUCCESS = 'Admin/data/place/REMOVE_ONE_SUCCESS';
+export const REMOVE_ONE_FAILURE = 'Admin/data/place/REMOVE_ONE_FAILURE';
+export const REMOVE_MANY_WAITING = 'Admin/data/place/REMOVE_MANY_WAITING';
+export const REMOVE_MANY_SUCCESS = 'Admin/data/place/REMOVE_MANY_SUCCESS';
+export const REMOVE_MANY_FAILURE = 'Admin/data/place/REMOVE_MANY_FAILURE';
 
 const retrieveOneWaiting = () => {
   return {
     type: RETRIEVE_ONE_WAITING,
   };
 };
-const retrieveOneSuccess = (account) => {
+const retrieveOneSuccess = (place) => {
   return {
     type: RETRIEVE_ONE_SUCCESS,
-    account,
+    place,
   };
 };
 const retrieveOneFailure = (error) => {
@@ -43,7 +43,7 @@ export const retrieveOneRequest = (_id) => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(retrieveOneWaiting());
-    return fetch(`${configure.API}/account/${_id}`, {
+    return fetch(`${configure.API}/place/${_id}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -74,10 +74,10 @@ const retrieveManyWaiting = () => {
     type: RETRIEVE_MANY_WAITING,
   };
 };
-const retrieveManySuccess = (accounts) => {
+const retrieveManySuccess = (places) => {
   return {
     type: RETRIEVE_MANY_SUCCESS,
-    accounts,
+    places,
   };
 };
 const retrieveManyFailure = (error) => {
@@ -90,7 +90,7 @@ export const retrieveManyRequest = () => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(retrieveManyWaiting());
-    return fetch(`${configure.API}/account`, {
+    return fetch(`${configure.API}/place`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -132,16 +132,16 @@ const modifyOneFailure = (error) => {
     error,
   };
 };
-export const modifyOneRequest = (account) => {
+export const modifyOneRequest = (place) => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(modifyOneWaiting());
-    return fetch(`${configure.API}/account`, {
+    return fetch(`${configure.API}/place`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
-        data: account,
+        data: place,
       }),
     })
       .then((res) => {
@@ -179,16 +179,16 @@ const createOneFailure = (error) => {
     error,
   };
 };
-export const createOneRequest = (account) => {
+export const createOneRequest = (place) => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(createOneWaiting());
-    return fetch(`${configure.API}/account`, {
+    return fetch(`${configure.API}/place`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
-        data: account,
+        data: place,
       }),
     })
       .then((res) => {
@@ -226,16 +226,16 @@ const removeOneFailure = (error) => {
     error,
   };
 };
-export const removeOneRequest = (account) => {
+export const removeOneRequest = (place) => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(removeOneWaiting());
-    return fetch(`${configure.API}/account`, {
+    return fetch(`${configure.API}/place`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
-        data: account,
+        data: place,
       }),
     })
       .then((res) => {
@@ -273,16 +273,16 @@ const removeManyFailure = (error) => {
     error,
   };
 };
-export const removeManyRequest = (accounts) => {
+export const removeManyRequest = (places) => {
   return (dispatch) => {
     dispatch(loader.on());
     dispatch(removeManyWaiting());
-    return fetch(`${configure.API}/account`, {
+    return fetch(`${configure.API}/place`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
-        data: accounts,
+        data: places,
       }),
     })
       .then((res) => {

@@ -17,7 +17,6 @@ import AdminTableHeader from './components/AdminTableHeader';
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit,
   },
   table: {
     minWidth: 800,
@@ -198,7 +197,7 @@ class AdminTable extends React.Component {
                           padding={value.disablePadding ? 'none' : 'default'}
                           numeric={value.numeric}
                         >
-                          {row[key]}
+                          {value.tableFunc ? value.tableFunc(row[key]) : row[key]}
                         </TableCell>
                       );
                       }

@@ -11,12 +11,14 @@ class Login extends React.Component {
       inputId: '',
       inputPassword: '',
     };
+    this.onInputChange = this.onInputChange.bind(this);
   }
-  onInputChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
+  onInputChange(name) {
+    return event =>
+      this.setState({
+        [name]: event.target.value,
+      });
+  }
   render() {
     return (
       <div className="paperWrapper">
