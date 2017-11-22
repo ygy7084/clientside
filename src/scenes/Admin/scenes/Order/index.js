@@ -81,7 +81,7 @@ class Order extends React.Component {
   shopRetrieveMany() {
     this.props.shopRetrieveManyRequest()
       .then((data) => {
-        if (this.props.shopRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.shopRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
@@ -92,7 +92,7 @@ class Order extends React.Component {
   productRetrieveMany() {
     this.props.productRetrieveManyRequest()
       .then((data) => {
-        if (this.props.productRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.productRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
@@ -103,7 +103,7 @@ class Order extends React.Component {
   placeRetrieveMany() {
     this.props.placeRetrieveManyRequest()
       .then((data) => {
-        if (this.props.placeRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.placeRetrieveMany.status === 'FAILURE') {
           console.log(this.props);
           throw data;
         }
@@ -115,7 +115,7 @@ class Order extends React.Component {
   nfcRetrieveMany() {
     this.props.nfcRetrieveManyRequest()
       .then((data) => {
-        if (this.props.nfcRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.nfcRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
@@ -126,7 +126,7 @@ class Order extends React.Component {
   customerRetrieveMany() {
     this.props.customerRetrieveManyRequest()
       .then((data) => {
-        if (this.props.customerRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.customerRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
@@ -137,7 +137,7 @@ class Order extends React.Component {
   orderRetrieveOne() {
     this.props.orderRetrieveOneRequest()
       .then((data) => {
-        if (this.props.orderRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.orderRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -148,7 +148,7 @@ class Order extends React.Component {
   orderRetrieveMany() {
     this.props.orderRetrieveManyRequest()
       .then((data) => {
-        if (this.props.orderRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.orderRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
@@ -340,6 +340,7 @@ const mapStateToProps = state => ({
   orderCreateOne: state.admin.data.order.createOne,
   orderRemoveOne: state.admin.data.order.removeOne,
   orderRemoveMany: state.admin.data.order.removeMany,
+  state
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: path => push(path),

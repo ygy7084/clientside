@@ -131,7 +131,6 @@ class Dialog extends React.Component {
     const {
       classes, title, item, mode, data
     } = this.props;
-    console.log(item);
     return (
       <div>
         <ControlPanel

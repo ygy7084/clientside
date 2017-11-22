@@ -59,7 +59,7 @@ class Customer extends React.Component {
   customerRetrieveOne() {
     this.props.customerRetrieveOneRequest()
       .then((data) => {
-        if (this.props.customerRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.customerRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -70,7 +70,7 @@ class Customer extends React.Component {
   customerRetrieveMany() {
     this.props.customerRetrieveManyRequest()
       .then((data) => {
-        if (this.props.customerRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.customerRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })

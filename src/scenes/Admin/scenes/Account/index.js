@@ -81,7 +81,7 @@ class Account extends React.Component {
   accountRetrieveOne() {
     this.props.accountRetrieveOneRequest()
       .then((data) => {
-        if (this.props.accountRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.accountRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -92,7 +92,7 @@ class Account extends React.Component {
   accountRetrieveMany() {
     this.props.accountRetrieveManyRequest()
       .then((data) => {
-        if (this.props.accountRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.accountRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })

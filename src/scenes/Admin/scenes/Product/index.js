@@ -34,6 +34,12 @@ const inputStructure = [
     required: true,
   },
   {
+    name: '간단 설명',
+    key: ['subDescription'],
+    type: 'string',
+    target: ['subDescription'],
+  },
+  {
     name: '설명',
     key: ['description'],
     tableView: false,
@@ -46,6 +52,15 @@ const inputStructure = [
     key: ['price'],
     type: 'number',
     target: ['price'],
+  },
+  {
+    name: '종류',
+    key: ['category'],
+    type: 'string',
+    form: 'autoSuggest',
+    defaultValue: '',
+    formOptions: [],
+    target: ['category'],
   },
   {
     name: '매장',
@@ -114,7 +129,7 @@ class Product extends React.Component {
   pictureRetrieveMany() {
     this.props.pictureRetrieveManyRequest()
       .then((data) => {
-        if (this.props.pictureRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.pictureRetrieveMany.status === 'FAILURE') {
           throw data;
         } else {
           this.setState((prevState) => {
@@ -134,7 +149,7 @@ class Product extends React.Component {
   productRetrieveOne() {
     this.props.productRetrieveOneRequest()
       .then((data) => {
-        if (this.props.productRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.productRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -145,8 +160,14 @@ class Product extends React.Component {
   productRetrieveMany() {
     this.props.productRetrieveManyRequest()
       .then((data) => {
-        if (this.props.productRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.productRetrieveMany.status === 'FAILURE') {
           throw data;
+        } else {
+          this.setState((prevState) => {
+            const { structure } = prevState;
+            // structure.find(i => i.name === '종류').formOptions
+            return { structure };
+          });
         }
       })
       .catch((data) => {

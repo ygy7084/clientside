@@ -42,7 +42,7 @@ class Log extends React.Component {
   logRetrieveOne() {
     this.props.logRetrieveOneRequest()
       .then((data) => {
-        if (this.props.logRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.logRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -53,7 +53,7 @@ class Log extends React.Component {
   logRetrieveMany() {
     this.props.logRetrieveManyRequest()
       .then((data) => {
-        if (this.props.logRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.logRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })

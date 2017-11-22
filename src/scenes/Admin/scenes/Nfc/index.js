@@ -77,7 +77,7 @@ class Nfc extends React.Component {
   nfcRetrieveOne() {
     this.props.nfcRetrieveOneRequest()
       .then((data) => {
-        if (this.props.nfcRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.nfcRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -88,7 +88,7 @@ class Nfc extends React.Component {
   nfcRetrieveMany() {
     this.props.nfcRetrieveManyRequest()
       .then((data) => {
-        if (this.props.nfcRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.nfcRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })

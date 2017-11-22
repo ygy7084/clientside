@@ -124,14 +124,6 @@ class Admin extends React.Component {
       });
   }
   render() {
-    const routes = [];
-    menuItems.forEach(item => routes.push(
-      <Route
-        key={item.path}
-        path={item.path}
-        render={() => (<div>{item.name}</div>)}
-      />
-    ));
     return (
       <Switch>
         {

@@ -65,7 +65,7 @@ class Place extends React.Component {
   placeRetrieveOne() {
     this.props.placeRetrieveOneRequest()
       .then((data) => {
-        if (this.props.placeRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.placeRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -76,8 +76,7 @@ class Place extends React.Component {
   placeRetrieveMany() {
     this.props.placeRetrieveManyRequest()
       .then((data) => {
-        if (this.props.placeRetrieveMany.status !== 'SUCCESS') {
-          console.log(this.props);
+        if (this.props.placeRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })

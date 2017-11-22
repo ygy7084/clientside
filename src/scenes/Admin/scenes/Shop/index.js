@@ -58,7 +58,7 @@ class Shop extends React.Component {
   shopRetrieveOne() {
     this.props.shopRetrieveOneRequest()
       .then((data) => {
-        if (this.props.shopRetrieveOne.status !== 'SUCCESS') {
+        if (this.props.shopRetrieveOne.status === 'FAILURE') {
           throw data;
         }
       })
@@ -69,7 +69,7 @@ class Shop extends React.Component {
   shopRetrieveMany() {
     this.props.shopRetrieveManyRequest()
       .then((data) => {
-        if (this.props.shopRetrieveMany.status !== 'SUCCESS') {
+        if (this.props.shopRetrieveMany.status === 'FAILURE') {
           throw data;
         }
       })
