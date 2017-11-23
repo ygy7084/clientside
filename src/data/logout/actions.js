@@ -43,6 +43,7 @@ export const request = () => {
       })
       .then((res) => {
         if (res.data) {
+          console.log(res.data);
           return dispatch(success(res.data));
         }
         return dispatch(failure({

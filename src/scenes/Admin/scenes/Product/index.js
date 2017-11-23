@@ -164,10 +164,20 @@ class Product extends React.Component {
         if (this.props.productRetrieveMany.status === 'FAILURE') {
           throw data;
         } else {
-          this.setState((prevState) => {
-            const { structure } = prevState;
-            // structure.find(i => i.name === '종류').formOptions
-            return { structure };
+          this.setState((state) => {
+            const newS = state;
+            const arr = [];
+            this.props.productRetrieveMany.products.forEach((item) => {
+              if (item.category && item.category !== '' && arr.findIndex(o => o === item.category) < 0) {
+                arr.push(item.category);
+              }
+            });
+            newS.structure.find(i => i.name === '종류').formOptions =
+              arr.map(o => ({
+                label: o,
+                value: o,
+              }));
+            return newS;
           });
         }
       })

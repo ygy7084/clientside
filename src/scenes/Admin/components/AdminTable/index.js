@@ -230,7 +230,7 @@ class AdminTable extends React.Component {
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                     rowsPerPageOptions={[10, 25, 50, 100]}
                     labelRowsPerPage="페이지당 행 개수"
-                    labelDisplayedRows={({ from, to, count }) => (`${from}행부터 ${to}행, ${count} 페이지`)}
+                    labelDisplayedRows={({ from, to, count }) => (`${from}행부터 ${to}행, 총 ${count}개`)}
                   />
                 </TableRow>
               </TableFooter>
