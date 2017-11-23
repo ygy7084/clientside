@@ -93,6 +93,7 @@ class Product extends React.Component {
     this.shopRetrieveMany = this.shopRetrieveMany.bind(this);
     this.pictureRetrieveMany = this.pictureRetrieveMany.bind(this);
     this.productRetrieveMany = this.productRetrieveMany.bind(this);
+    this.productRetrieveOne = this.productRetrieveOne.bind(this);
     this.productModifyOne = this.productModifyOne.bind(this);
     this.productCreateOne = this.productCreateOne.bind(this);
     this.productRemoveOne = this.productRemoveOne.bind(this);
