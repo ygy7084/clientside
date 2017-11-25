@@ -5,31 +5,30 @@ import {
   Route,
   Switch,
   withRouter,
-  render,
 } from 'react-router-dom';
 import { push } from 'react-router-redux';
+import { arrayMove } from 'react-sortable-hoc';
 import * as noticeDialogActions from '../../../../data/noticeDialog/actions';
 import * as productActions from '../../data/product/actions';
 import MenuList from './components/MenuList';
 import configure from '../../../../modules/configure';
-import { arrayMove } from 'react-sortable-hoc';
 
 class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inStock: 0,
       items: [],
     };
+    this.onSortEnd = this.onSortEnd.bind(this);
     this.productRetrieveMany = this.productRetrieveMany.bind(this);
     this.productRetrieveOne = this.productRetrieveOne.bind(this);
     this.productRetrieveMany();
   }
-  onSortEnd = ({oldIndex, newIndex}) => {
+  onSortEnd({ oldIndex, newIndex }) {
     this.setState({
       items: arrayMove(this.state.items, oldIndex, newIndex),
     });
-  };
+  }
   productRetrieveOne(id) {
     this.props.productRetrieveOneRequest(id)
       .then((data) => {
