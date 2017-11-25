@@ -40,11 +40,11 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
         {
           parts.map((part, index) => {
             return part.highlight ? (
-              <span key={index} style={{ fontWeight: 300 }}>
+              <span key={part.text} style={{ fontWeight: 300 }}>
                 {part.text}
               </span>
             ) : (
-              <strong key={index} style={{ fontWeight: 500 }}>
+              <strong key={part.text} style={{ fontWeight: 500 }}>
                 {part.text}
               </strong>
             );

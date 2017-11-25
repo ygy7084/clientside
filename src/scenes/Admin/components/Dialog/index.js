@@ -13,6 +13,7 @@ import AutoSuggestion from '../../components/AutoSuggestion';
 import ImageTileList from './components/ImageTileList';
 import ImageXaxisList from './components/ImageXaxisList';
 import FullSizeImage from './components/FullSizeImage';
+import Options from './components/Options';
 import './styles.css';
 
 const drawerWidth = 240;
@@ -234,6 +235,13 @@ class Dialog extends React.Component {
             />
           </div>
         );
+      } else if (i.form === 'options') {
+        inputs.push(<Options
+          key={i.name}
+          title={i.name}
+          options={i.value}
+          handleOptionChange={o => this.handleInputChange(o, i.name)}
+        />);
       }
       inputs.push(<br key={`${i.name}br`} />);
     });

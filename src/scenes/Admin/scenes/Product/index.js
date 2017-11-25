@@ -63,6 +63,14 @@ const inputStructure = [
     target: ['category'],
   },
   {
+    name: '옵션',
+    key: ['options'],
+    type: 'array',
+    form: 'options',
+    target: ['options'],
+    tableView: false,
+  },
+  {
     name: '매장',
     key: ['shop', 'name'],
     type: 'string',
@@ -82,6 +90,7 @@ const inputStructure = [
     formOptions: [],
     target: ['pictures'],
     readOnly: true,
+    tableView: false,
   },
 ];
 class Product extends React.Component {

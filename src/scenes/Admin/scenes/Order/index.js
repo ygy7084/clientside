@@ -42,7 +42,7 @@ const inputStructure = [
     name: '시각',
     key: ['datetime'],
     type: 'date',
-    tableFunc: (o) => new Date(o).toLocaleString(),
+    tableFunc: o => new Date(o).toLocaleString(),
   },
   {
     name: '상태',

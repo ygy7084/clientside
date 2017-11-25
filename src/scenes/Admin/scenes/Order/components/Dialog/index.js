@@ -46,7 +46,6 @@ class Dialog extends React.Component {
       nfc: {},
       place: {},
       datetime: undefined,
-      message: '',
       status: 0,
     };
     if (this.props.item) {
@@ -57,7 +56,6 @@ class Dialog extends React.Component {
         nfc: this.props.item.nfc || {},
         place: this.props.item.place || {},
         datetime: this.props.item.datetime || null,
-        message: this.props.item.message || '',
         status: this.props.item.status || 0,
       };
     }
@@ -78,7 +76,6 @@ class Dialog extends React.Component {
         nfc: nextProps.item.nfc || {},
         place: nextProps.item.place || {},
         datetime: nextProps.item.datetime || null,
-        message: nextProps.item.message || '',
         status: nextProps.item.status || 0,
       });
     }
@@ -154,7 +151,7 @@ class Dialog extends React.Component {
                 className={classes.formInput}
                 fullWidth
                 value={this.state.status}
-                onChange={e => this.handleInputChange(e.target.value, "status")}
+                onChange={e => this.handleInputChange(e.target.value, 'status')}
               >
                 <MenuItem value={0}>
                   주문됨
