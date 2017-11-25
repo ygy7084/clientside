@@ -9,6 +9,7 @@ import NfcIcon from 'material-ui-icons/Nfc';
 import LogIcon from 'material-ui-icons/History';
 import PictureIcon from 'material-ui-icons/Photo';
 import PlaceIcon from 'material-ui-icons/GetApp';
+import MenuIcon from 'material-ui-icons/Apps';
 import {
   Route,
   Switch,
@@ -28,6 +29,7 @@ import Order from './scenes/Order';
 import Nfc from './scenes/Nfc';
 import Place from './scenes/Place';
 import Log from './scenes/Log';
+import Menu from './scenes/Menu';
 import * as logoutActions from '../../data/logout/actions';
 import * as authActions from '../../data/auth/actions';
 
@@ -103,6 +105,14 @@ const menuItems = [
     permission: ['manager', 'shop'],
     scene: Place,
   },
+  {
+    name: '메뉴판',
+    path: '/menu',
+    icon: MenuIcon,
+    permission: ['manager', 'shop'],
+    scene: Menu,
+
+  }
 ];
 class Admin extends React.Component {
   constructor(props) {
