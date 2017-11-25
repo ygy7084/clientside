@@ -1,67 +1,105 @@
 import React from 'react';
-import {
-  Route,
-  withRouter,
-  Switch,
-  render,
-} from 'react-router-dom';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {
+  Route,
+  Switch,
+  withRouter,
+  render,
+} from 'react-router-dom';
 import { push } from 'react-router-redux';
-import * as productActions from '../../data/product/actions';
 import * as noticeDialogActions from '../../../../data/noticeDialog/actions';
-
-const SortableItem = SortableElement(({value}) =>
-  <div style={{ border: '1px solid black'}}><p>{value}</p></div>
-);
-const SortableList = SortableContainer(({items}) => {
-  return (
-    <ul>
-      {items.map((value, index) => (
-        <SortableItem key={`item-${index}`} index={index} value={value} />
-      ))}
-    </ul>
-  );
-});
+import * as productActions from '../../data/product/actions';
+import MenuList from './components/MenuList';
+import configure from '../../../../modules/configure';
+import { arrayMove } from 'react-sortable-hoc';
 
 class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      inStock: 0,
       items: [],
     };
-    this.props.productRetrieveManyRequest()
-      .then((data) => {
-        if(this.props.productRetrieveMany.status === 'FAILURE') {
-          throw data;
-        }
-      });
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      items: nextProps.productRetrieveMany.products.map(i => i.name),
-    });
+    this.productRetrieveMany = this.productRetrieveMany.bind(this);
+    this.productRetrieveOne = this.productRetrieveOne.bind(this);
+    this.productRetrieveMany();
   }
   onSortEnd = ({oldIndex, newIndex}) => {
     this.setState({
       items: arrayMove(this.state.items, oldIndex, newIndex),
     });
   };
+  productRetrieveOne(id) {
+    this.props.productRetrieveOneRequest(id)
+      .then((data) => {
+        if (this.props.productRetrieveOne.status === 'FAILURE') {
+          throw data;
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
+  productRetrieveMany() {
+    this.props.productRetrieveManyRequest()
+      .then((data) => {
+        if (this.props.productRetrieveMany.status === 'FAILURE') {
+          throw data;
+        } else {
+          this.setState((prevState) => {
+            const { structure } = prevState;
+            const { productRetrieveMany } = this.props;
+            return {
+              structure,
+              items: productRetrieveMany.products,
+            };
+          });
+        }
+      })
+      .catch((data) => {
+        this.props.showError(data);
+      });
+  }
   render() {
-    return <SortableList items={this.state.items} onSortEnd={this.onSortEnd} />;
+    const {
+      productRetrieveOne,
+    } = this.props;
+    let item;
+    if (productRetrieveOne.status === 'SUCCESS') {
+      item = JSON.parse(JSON.stringify(productRetrieveOne.product));
+    }
+    if (item && item.pictures) {
+      item.pictures = item.pictures.map(src => `${configure.STATIC}${src}`);
+    }
+    return (
+      <div>
+        <MenuList
+          list={JSON.parse(JSON.stringify(this.state.items)).map((item) => {
+            const temp = item;
+            if (temp.pictures) {
+              temp.pictures = temp.pictures.map(src => `${configure.STATIC}${src}`);
+            }
+            return temp;
+          })}
+          onSortEnd={this.onSortEnd}
+        />
+      </div>
+    );
   }
 }
 const mapStateToProps = state => ({
+  productRetrieveOne: state.admin.data.product.retrieveOne,
   productRetrieveMany: state.admin.data.product.retrieveMany,
- });
+});
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: path => push(path),
   noticeDialogOn: noticeDialogActions.on,
   noticeDialogOff: noticeDialogActions.off,
   showError: noticeDialogActions.error,
+  productRetrieveOneRequest: productActions.retrieveOneRequest,
   productRetrieveManyRequest: productActions.retrieveManyRequest,
-  }, dispatch);
+}, dispatch);
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,

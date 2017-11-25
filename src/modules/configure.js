@@ -1,6 +1,7 @@
 const configure =
   {
     SERVER: '',
-    API: '/api'
+    API: '/api',
+    STATIC: 'http://localhost:8080'
   };
 export default configure;
